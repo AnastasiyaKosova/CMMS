@@ -30,8 +30,23 @@
   <label>Пароль</label>
   <input id="password" type="password" placeholder="Введите пароль">
   <button id="login-btn">Войти</button>
+  <button id="register-btn">Регистрация</button>
   <div class="note">Политика безопасности / <a href="#" style="color:#06b6d4;">Забыли пароль?</a></div>
   <div id="login-msg" class="note"></div>
+</div>
+
+<!-- Экран 1.1: Регистрация -->
+<div id="register-screen" class="screen">
+  <h2>Регистрация нового пользователя</h2>
+  <label>Логин</label>
+  <input id="reg-login" type="text" placeholder="Введите логин">
+  <label>Пароль</label>
+  <input id="reg-password" type="password" placeholder="Введите пароль">
+  <label>Повтор пароля</label>
+  <input id="reg-password-repeat" type="password" placeholder="Повторите пароль">
+  <button id="create-account-btn">Создать аккаунт</button>
+  <button class="back-btn btn" id="back-to-login-from-reg">Назад</button>
+  <div id="reg-msg" class="note"></div>
 </div>
 
 <!-- Экран 2: Материалы для изучения -->
@@ -68,7 +83,7 @@
     <table>
       <thead><tr><th>Время</th><th>Оборудование</th><th>Тип</th><th>Описание</th></tr></thead>
       <tbody>
-        <tr><td>12:00</td><td>Печь №1</td><td>Аварийная</td><td>Тестовая остановка</td></tr>
+        <tr><td>12:00</td><td>Буровая установка</td><td>Аварийная</td><td>Остановка</td></tr>
       </tbody>
     </table>
   </div>
@@ -76,25 +91,55 @@
 
 <script>
   const loginScreen = document.getElementById('login-screen');
+  const registerScreen = document.getElementById('register-screen');
   const materialScreen = document.getElementById('material-screen');
   const quizScreen = document.getElementById('quiz-screen');
   const workspaceScreen = document.getElementById('workspace-screen');
   const loginBtn = document.getElementById('login-btn');
   const loginMsg = document.getElementById('login-msg');
 
+  const users = { 'admin':'admin', 'editor':'editor' }; // локальное хранение пользователей для прототипа
+
   loginBtn.addEventListener('click', ()=>{
     const login = document.getElementById('login').value.trim();
     const password = document.getElementById('password').value.trim();
 
-    if(login === 'admin' && password === 'admin'){
+    if(users[login] && users[login] === password){
       loginScreen.classList.remove('active');
-      workspaceScreen.classList.add('active');
-    } else if(login === 'editor' && password === 'editor'){
-      loginScreen.classList.remove('active');
-      materialScreen.classList.add('active');
+      if(login === 'admin'){
+        workspaceScreen.classList.add('active');
+      } else {
+        materialScreen.classList.add('active');
+      }
     } else {
       loginMsg.textContent = 'Неверный логин или пароль';
     }
+  });
+
+  document.getElementById('register-btn').addEventListener('click', ()=>{
+    loginScreen.classList.remove('active');
+    registerScreen.classList.add('active');
+  });
+
+  document.getElementById('back-to-login-from-reg').addEventListener('click', ()=>{
+    registerScreen.classList.remove('active');
+    loginScreen.classList.add('active');
+  });
+
+  document.getElementById('create-account-btn').addEventListener('click', ()=>{
+    const login = document.getElementById('reg-login').value.trim();
+    const password = document.getElementById('reg-password').value.trim();
+    const passwordRepeat = document.getElementById('reg-password-repeat').value.trim();
+    const regMsg = document.getElementById('reg-msg');
+
+    if(!login || !password) { regMsg.textContent = 'Заполните все поля'; return; }
+    if(password !== passwordRepeat) { regMsg.textContent = 'Пароли не совпадают'; return; }
+    if(users[login]) { regMsg.textContent = 'Пользователь уже существует'; return; }
+
+    users[login] = password;
+    regMsg.textContent = 'Пользователь создан';
+    registerScreen.classList.remove('active');
+    materialScreen.classList.add('active');
   });
 
   const saveMaterialBtn = document.getElementById('save-material-btn');
@@ -120,11 +165,9 @@
     }
   });
 
-  // Кнопки на рабочем окне (для примера)
   document.getElementById('add-bg-btn').addEventListener('click', ()=>alert('Добавить фон — пока заглушка'));
   document.getElementById('add-text-btn').addEventListener('click', ()=>alert('Добавить текст — пока заглушка'));
 
-  // Кнопки назад
   document.getElementById('back-to-login-1').addEventListener('click', ()=>{
     materialScreen.classList.remove('active');
     loginScreen.classList.add('active');
