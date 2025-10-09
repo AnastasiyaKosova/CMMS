@@ -3,183 +3,501 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AMMS — Стартовая страница</title>
+<title>CMMS — Система управления обслуживанием</title>
 <style>
   body {margin:0; font-family: Inter, sans-serif; background: #0f1724; color: #e6eef6; display:flex; justify-content:center; align-items:flex-start; padding-top:20px;}
   .screen {display:none; padding:20px; border-radius:12px; background: #0b1220; width:90%; max-width:800px; box-shadow:0 6px 18px rgba(2,6,23,0.6);}
   .active {display:block;}
-  h2 {margin-top:0;}
+  
+  .admin-panel { background: #1e293b; border-left: 4px solid #06b6d4; }
+  .question-item { background: rgba(255,255,255,0.03); padding: 12px; margin: 8px 0; border-radius: 8px; }
+  .results-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  .results-table th { background: rgba(6,182,212,0.1); padding: 10px; text-align: left; }
+  .results-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  
   input, textarea, select {width:100%; padding:8px; margin-bottom:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#e6eef6;}
-  button {padding:10px 16px; border:none; border-radius:10px; background:#06b6d4; color:#052026; cursor:pointer; margin-top:4px;}
+  button {padding:10px 16px; border:none; border-radius:10px; background:#06b6d4; color:#052026; cursor:pointer; margin:4px;}
+  .btn-danger {background:#ef4444;}
+  .btn-success {background:#10b981;}
+  .btn-secondary {background:#64748b;}
   .note {font-size:12px; color:#94a3b8; margin-bottom:12px;}
-  table {width:100%; border-collapse:collapse;}
-  th, td {padding:8px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.03); font-size:13px;}
-  th {color:#94a3b8; font-weight:600;}
   .card {background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04)); border-radius:12px; padding:14px; box-shadow:0 6px 18px rgba(2,6,23,0.6); margin-bottom:12px;}
-  .btn {display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; border:0; background:#06b6d4; color:#052026; cursor:pointer;}
-  .back-btn {background:#64748b;}
+  
+  .admin-dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+  .admin-card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; text-align: center; }
+  .admin-card h3 { margin-top: 0; }
 </style>
 </head>
 <body>
 
 <!-- Экран 1: Вход -->
 <div id="login-screen" class="screen active">
-  <h2>Вход в систему</h2>
-  <label>Логин</label>
-  <input id="login" type="text" placeholder="Введите логин">
-  <label>Пароль</label>
-  <input id="password" type="password" placeholder="Введите пароль">
+  <h2>Вход в CMMS</h2>
+  <input id="login" type="text" placeholder="Логин">
+  <input id="password" type="password" placeholder="Пароль">
   <button id="login-btn">Войти</button>
-  <button id="register-btn">Регистрация</button>
-  <div class="note">Политика безопасности / <a href="#" style="color:#06b6d4;">Забыли пароль?</a></div>
   <div id="login-msg" class="note"></div>
-</div>
-
-<!-- Экран 1.1: Регистрация -->
-<div id="register-screen" class="screen">
-  <h2>Регистрация нового пользователя</h2>
-  <label>Логин</label>
-  <input id="reg-login" type="text" placeholder="Введите логин">
-  <label>Пароль</label>
-  <input id="reg-password" type="password" placeholder="Введите пароль">
-  <label>Повтор пароля</label>
-  <input id="reg-password-repeat" type="password" placeholder="Повторите пароль">
-  <button id="create-account-btn">Создать аккаунт</button>
-  <button class="back-btn btn" id="back-to-login-from-reg">Назад</button>
-  <div id="reg-msg" class="note"></div>
-</div>
-
-<!-- Экран 2: Материалы для изучения -->
-<div id="material-screen" class="screen">
-  <h2>Материалы для изучения</h2>
-  <div id="material-content" contenteditable="true" style="min-height:150px; padding:10px; border:1px solid rgba(255,255,255,0.05); border-radius:8px; margin-bottom:12px; background: rgba(255,255,255,0.02);">Добавьте текст или материалы для изучения</div>
-  <button id="save-material-btn">Сохранить и продолжить</button>
-  <button class="back-btn btn" id="back-to-login-1">Назад</button>
-  <div class="note">Только для администратора: редактирование материалов.</div>
-</div>
-
-<!-- Экран 3: Мини-опросник -->
-<div id="quiz-screen" class="screen">
-  <h2>Мини-опросник</h2>
-  <div id="quiz-content">
-    <p>Вопрос: Что делает эта система?</p>
-    <input type="text" id="quiz-answer" placeholder="Ваш ответ">
-    <button id="submit-quiz-btn">Отправить ответ</button>
-    <button class="back-btn btn" id="back-to-material">Назад</button>
-    <div id="quiz-msg" class="note"></div>
+  <div class="note">
+    <strong>Тестовые пользователи:</strong><br>
+    👑 Админ: admin / admin123<br>
+    ⚙️ Инженер: engineer / engineer123
   </div>
 </div>
 
-<!-- Экран 4: Рабочее окно -->
+<!-- Экран 2: Админ Дашборд -->
+<div id="admin-dashboard-screen" class="screen admin-panel">
+  <h2>👑 Панель администратора</h2>
+  
+  <div class="admin-dashboard">
+    <div class="admin-card">
+      <h3>⚙️ Настройка обучения</h3>
+      <p>Настройте учебные материалы и вопросы для сотрудников</p>
+      <button id="admin-setup-btn">Перейти к настройкам</button>
+    </div>
+    
+    <div class="admin-card">
+      <h3>🛠️ Рабочее окно</h3>
+      <p>Доступ ко всем функциям системы</p>
+      <button id="admin-workspace-btn">Перейти в рабочее окно</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📊 Быстрый доступ</h3>
+    <button id="view-results-btn">Посмотреть результаты тестов</button>
+    <button id="manage-users-btn">Управление пользователями</button>
+  </div>
+
+  <button class="btn-secondary" id="logout-admin">🚪 Выйти</button>
+</div>
+
+<!-- Экран 3: Настройка материалов -->
+<div id="admin-setup-screen" class="screen admin-panel">
+  <h2>⚙️ Настройка обучающих материалов</h2>
+  
+  <div class="card">
+    <h3>📚 Учебный материал</h3>
+    <textarea id="training-material" rows="10" placeholder="Введите учебный материал (можно копировать из Word)...">Добро пожаловать в систему CMMS. Это базовая информация о работе системы...</textarea>
+  </div>
+  
+  <div class="card">
+    <h3>❓ Вопросы для тестирования (10 вопросов)</h3>
+    <div id="questions-container">
+      <!-- Вопросы будут генерироваться здесь -->
+    </div>
+    <button id="add-question-btn">➕ Добавить вопрос</button>
+  </div>
+  
+  <button id="save-training-btn" class="btn-success">💾 Сохранить обучение</button>
+  <button class="btn-secondary" id="back-to-admin-dashboard">← Назад в панель администратора</button>
+</div>
+
+<!-- Экран 4: Просмотр результатов -->
+<div id="results-screen" class="screen admin-panel">
+  <h2>📊 Результаты тестирования сотрудников</h2>
+  <table class="results-table">
+    <thead>
+      <tr>
+        <th>Сотрудник</th>
+        <th>Дата теста</th>
+        <th>Результат</th>
+        <th>Статус</th>
+      </tr>
+    </thead>
+    <tbody id="results-body">
+      <!-- Результаты будут здесь -->
+    </tbody>
+  </table>
+  <button class="btn-secondary" id="back-to-admin-from-results">← Назад в панель администратора</button>
+</div>
+
+<!-- Экран 5: Изучение материалов для сотрудника -->
+<div id="study-screen" class="screen">
+  <h2>📖 Обучающие материалы</h2>
+  <div id="study-content" class="card">
+    <!-- Материал загружается здесь -->
+  </div>
+  <button id="start-test-btn">🎯 Перейти к тестированию</button>
+  <button class="btn-secondary" id="logout-study">🚪 Выйти</button>
+</div>
+
+<!-- Экран 6: Тестирование для сотрудника -->
+<div id="test-screen" class="screen">
+  <h2>🧠 Тестирование знаний</h2>
+  <div id="test-progress">Вопрос 1 из 10</div>
+  <div class="card">
+    <h3 id="question-text">Вопрос будет здесь</h3>
+    <input type="text" id="answer-input" placeholder="Введите ваш ответ...">
+  </div>
+  <button id="next-question-btn">Далее →</button>
+  <div id="test-msg" class="note"></div>
+</div>
+
+<!-- Экран 7: Рабочее окно -->
 <div id="workspace-screen" class="screen">
-  <h2>Рабочее окно — регистрация остановок</h2>
-  <button class="back-btn btn" id="back-to-login-2">Выйти</button>
+  <h2>🛠️ Рабочее окно CMMS</h2>
+  
   <div class="card">
-    <button id="add-bg-btn" class="btn">Добавить фон</button>
-    <button id="add-text-btn" class="btn">Добавить текст</button>
+    <h3>Добро пожаловать в рабочую зону!</h3>
+    <p>Вы вошли как: <strong id="current-user-role"></strong></p>
+    
+    <div style="display: flex; gap: 10px; margin: 15px 0;">
+      <button onclick="alert('Функция просмотра оборудования')">📊 Оборудование</button>
+      <button onclick="alert('Функция отчетов')">📈 Отчеты</button>
+      <button onclick="alert('Функция уведомлений')">🔔 Уведомления</button>
+    </div>
   </div>
-  <div class="card">
-    <h3>Список остановок (заглушка)</h3>
-    <table>
-      <thead><tr><th>Время</th><th>Оборудование</th><th>Тип</th><th>Описание</th></tr></thead>
-      <tbody>
-        <tr><td>12:00</td><td>Буровая установка</td><td>Аварийная</td><td>Остановка</td></tr>
-      </tbody>
-    </table>
+
+  <!-- Для админа показываем дополнительные функции -->
+  <div id="admin-workspace-features" style="display: none;">
+    <div class="card">
+      <h3>👑 Административные функции</h3>
+      <div style="display: flex; gap: 10px;">
+        <button onclick="alert('Управление пользователями')">👥 Пользователи</button>
+        <button onclick="alert('Системные настройки')">⚙️ Настройки</button>
+        <button onclick="ScreenManager.show('admin-setup-screen')">📚 Настроить обучение</button>
+      </div>
+    </div>
   </div>
+
+  <button class="btn-secondary" id="logout-workspace">🚪 Выйти</button>
 </div>
 
 <script>
-  const loginScreen = document.getElementById('login-screen');
-  const registerScreen = document.getElementById('register-screen');
-  const materialScreen = document.getElementById('material-screen');
-  const quizScreen = document.getElementById('quiz-screen');
-  const workspaceScreen = document.getElementById('workspace-screen');
-  const loginBtn = document.getElementById('login-btn');
-  const loginMsg = document.getElementById('login-msg');
+// Система хранения данных
+class CMMSStorage {
+    static getUsers() {
+        const storedUsers = JSON.parse(localStorage.getItem('cmms_users'));
+        if (!storedUsers) {
+            // Первый запуск - создаем дефолтных пользователей
+            const defaultUsers = {
+                'admin': { 
+                    password: 'admin123', 
+                    role: 'admin', 
+                    firstLogin: false,
+                    fullName: 'Главный Администратор'
+                },
+                'engineer': { 
+                    password: 'engineer123', 
+                    role: 'engineer', 
+                    firstLogin: true,
+                    fullName: 'Сергей Петров'
+                }
+            };
+            this.saveUsers(defaultUsers);
+            return defaultUsers;
+        }
+        return storedUsers;
+    }
 
-  const users = { 'admin':'admin', 'editor':'editor' }; // локальное хранение пользователей для прототипа
+    static saveUsers(users) {
+        localStorage.setItem('cmms_users', JSON.stringify(users));
+    }
 
-  loginBtn.addEventListener('click', ()=>{
+    static getTrainingData() {
+        return JSON.parse(localStorage.getItem('cmms_training')) || {
+            material: 'Добро пожаловать в систему CMMS. Это базовая информация о работе системы...',
+            questions: []
+        };
+    }
+
+    static saveTrainingData(data) {
+        localStorage.setItem('cmms_training', JSON.stringify(data));
+    }
+
+    static getTestResults() {
+        return JSON.parse(localStorage.getItem('cmms_results')) || [];
+    }
+
+    static saveTestResult(result) {
+        const results = this.getTestResults();
+        results.push(result);
+        localStorage.setItem('cmms_results', JSON.stringify(results));
+    }
+}
+
+// Управление экранами
+class ScreenManager {
+    static show(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        document.getElementById(screenId).classList.add('active');
+    }
+}
+
+// Глобальные переменные
+let currentUser = null;
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    initializeAdminPanel();
+    initializeLoginSystem();
+});
+
+// Админ панель - настройка вопросов
+function initializeAdminPanel() {
+    const questionsContainer = document.getElementById('questions-container');
+    const trainingData = CMMSStorage.getTrainingData();
+
+    // Загружаем существующие вопросы
+    loadQuestions();
+
+    document.getElementById('add-question-btn').addEventListener('click', function() {
+        addNewQuestion();
+    });
+
+    document.getElementById('save-training-btn').addEventListener('click', function() {
+        saveTrainingData();
+    });
+
+    document.getElementById('admin-setup-btn').addEventListener('click', function() {
+        ScreenManager.show('admin-setup-screen');
+    });
+
+    document.getElementById('admin-workspace-btn').addEventListener('click', function() {
+        showWorkspace();
+    });
+
+    document.getElementById('view-results-btn').addEventListener('click', function() {
+        loadResultsTable();
+        ScreenManager.show('results-screen');
+    });
+
+    document.getElementById('back-to-admin-dashboard').addEventListener('click', function() {
+        ScreenManager.show('admin-dashboard-screen');
+    });
+
+    document.getElementById('back-to-admin-from-results').addEventListener('click', function() {
+        ScreenManager.show('admin-dashboard-screen');
+    });
+
+    document.getElementById('manage-users-btn').addEventListener('click', function() {
+        alert('Функция управления пользователями будет реализована позже');
+    });
+
+    function loadQuestions() {
+        questionsContainer.innerHTML = '';
+        trainingData.questions.forEach((question, index) => {
+            addQuestionToUI(question, index);
+        });
+    }
+
+    function addNewQuestion() {
+        if (trainingData.questions.length >= 10) {
+            alert('Максимум 10 вопросов');
+            return;
+        }
+        
+        const newQuestion = {
+            text: '',
+            correctAnswer: ''
+        };
+        
+        trainingData.questions.push(newQuestion);
+        addQuestionToUI(newQuestion, trainingData.questions.length - 1);
+    }
+
+    function addQuestionToUI(question, index) {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question-item';
+        questionDiv.innerHTML = `
+            <strong>Вопрос ${index + 1}:</strong>
+            <input type="text" class="question-text" data-index="${index}" 
+                   placeholder="Текст вопроса" value="${question.text}">
+            <input type="text" class="question-answer" data-index="${index}" 
+                   placeholder="Правильный ответ" value="${question.correctAnswer}">
+            <button class="btn-danger remove-question" data-index="${index}">🗑️ Удалить</button>
+        `;
+        questionsContainer.appendChild(questionDiv);
+
+        // Обработчики событий
+        questionDiv.querySelector('.remove-question').addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            trainingData.questions.splice(index, 1);
+            loadQuestions();
+        });
+    }
+
+    function saveTrainingData() {
+        // Сохраняем материал
+        trainingData.material = document.getElementById('training-material').value;
+        
+        // Сохраняем вопросы
+        document.querySelectorAll('.question-text').forEach(input => {
+            const index = parseInt(input.getAttribute('data-index'));
+            trainingData.questions[index].text = input.value;
+        });
+        
+        document.querySelectorAll('.question-answer').forEach(input => {
+            const index = parseInt(input.getAttribute('data-index'));
+            trainingData.questions[index].correctAnswer = input.value;
+        });
+
+        CMMSStorage.saveTrainingData(trainingData);
+        alert('✅ Обучающие материалы сохранены!');
+    }
+}
+
+// Система входа и навигации
+function initializeLoginSystem() {
+    document.getElementById('login-btn').addEventListener('click', handleLogin);
+
+    document.getElementById('logout-admin').addEventListener('click', logout);
+    document.getElementById('logout-study').addEventListener('click', logout);
+    document.getElementById('logout-workspace').addEventListener('click', logout);
+
+    document.getElementById('start-test-btn').addEventListener('click', function() {
+        startEmployeeTest();
+    });
+
+    document.getElementById('next-question-btn').addEventListener('click', handleNextQuestion);
+}
+
+function handleLogin() {
     const login = document.getElementById('login').value.trim();
     const password = document.getElementById('password').value.trim();
+    const users = CMMSStorage.getUsers();
 
-    if(users[login] && users[login] === password){
-      loginScreen.classList.remove('active');
-      if(login === 'admin'){
-        workspaceScreen.classList.add('active');
-      } else {
-        materialScreen.classList.add('active');
-      }
-    } else {
-      loginMsg.textContent = 'Неверный логин или пароль';
+    if (!users[login] || users[login].password !== password) {
+        document.getElementById('login-msg').textContent = 'Неверный логин или пароль';
+        return;
     }
-  });
 
-  document.getElementById('register-btn').addEventListener('click', ()=>{
-    loginScreen.classList.remove('active');
-    registerScreen.classList.add('active');
-  });
-
-  document.getElementById('back-to-login-from-reg').addEventListener('click', ()=>{
-    registerScreen.classList.remove('active');
-    loginScreen.classList.add('active');
-  });
-
-  document.getElementById('create-account-btn').addEventListener('click', ()=>{
-    const login = document.getElementById('reg-login').value.trim();
-    const password = document.getElementById('reg-password').value.trim();
-    const passwordRepeat = document.getElementById('reg-password-repeat').value.trim();
-    const regMsg = document.getElementById('reg-msg');
-
-    if(!login || !password) { regMsg.textContent = 'Заполните все поля'; return; }
-    if(password !== passwordRepeat) { regMsg.textContent = 'Пароли не совпадают'; return; }
-    if(users[login]) { regMsg.textContent = 'Пользователь уже существует'; return; }
-
-    users[login] = password;
-    regMsg.textContent = 'Пользователь создан';
-    registerScreen.classList.remove('active');
-    materialScreen.classList.add('active');
-  });
-
-  const saveMaterialBtn = document.getElementById('save-material-btn');
-  saveMaterialBtn.addEventListener('click', ()=>{
-    const content = document.getElementById('material-content').innerHTML;
-    console.log('Сохраненный материал:', content);
-    materialScreen.classList.remove('active');
-    quizScreen.classList.add('active');
-  });
-
-  const submitQuizBtn = document.getElementById('submit-quiz-btn');
-  submitQuizBtn.addEventListener('click', ()=>{
-    const answer = document.getElementById('quiz-answer').value.trim().toLowerCase();
-    const quizMsg = document.getElementById('quiz-msg');
-    if(answer.includes('система')){
-      quizMsg.textContent = 'Ответ верный! Переход на рабочее окно.';
-      setTimeout(()=>{
-        quizScreen.classList.remove('active');
-        workspaceScreen.classList.add('active');
-      },500);
+    currentUser = { login, ...users[login] };
+    
+    if (currentUser.role === 'admin') {
+        // Админ попадает в дашборд
+        ScreenManager.show('admin-dashboard-screen');
     } else {
-      quizMsg.textContent = 'Ответ неверный. Попробуйте ещё раз.';
+        // Инженер проходит обычный путь
+        if (currentUser.firstLogin) {
+            loadStudyMaterials();
+            ScreenManager.show('study-screen');
+        } else {
+            showWorkspace();
+        }
     }
-  });
+}
 
-  document.getElementById('add-bg-btn').addEventListener('click', ()=>alert('Добавить фон — пока заглушка'));
-  document.getElementById('add-text-btn').addEventListener('click', ()=>alert('Добавить текст — пока заглушка'));
+function showWorkspace() {
+    // Показываем роль пользователя
+    document.getElementById('current-user-role').textContent = 
+        currentUser.role === 'admin' ? '👑 Администратор' : '⚙️ Инженер';
+    
+    // Показываем/скрываем админские функции
+    const adminFeatures = document.getElementById('admin-workspace-features');
+    adminFeatures.style.display = currentUser.role === 'admin' ? 'block' : 'none';
+    
+    ScreenManager.show('workspace-screen');
+}
 
-  document.getElementById('back-to-login-1').addEventListener('click', ()=>{
-    materialScreen.classList.remove('active');
-    loginScreen.classList.add('active');
-  });
-  document.getElementById('back-to-material').addEventListener('click', ()=>{
-    quizScreen.classList.remove('active');
-    materialScreen.classList.add('active');
-  });
-  document.getElementById('back-to-login-2').addEventListener('click', ()=>{
-    workspaceScreen.classList.remove('active');
-    loginScreen.classList.add('active');
-  });
+function loadStudyMaterials() {
+    const trainingData = CMMSStorage.getTrainingData();
+    document.getElementById('study-content').innerHTML = `
+        <div style="white-space: pre-wrap; line-height: 1.5;">${trainingData.material}</div>
+    `;
+}
+
+let currentTest = {
+    questions: [],
+    currentQuestionIndex: 0,
+    userAnswers: []
+};
+
+function startEmployeeTest() {
+    const trainingData = CMMSStorage.getTrainingData();
+    
+    if (trainingData.questions.length === 0) {
+        alert('Администратор еще не настроил вопросы теста');
+        return;
+    }
+
+    currentTest = {
+        questions: trainingData.questions,
+        currentQuestionIndex: 0,
+        userAnswers: []
+    };
+
+    ScreenManager.show('test-screen');
+    showCurrentQuestion();
+}
+
+function showCurrentQuestion() {
+    const question = currentTest.questions[currentTest.currentQuestionIndex];
+    document.getElementById('question-text').textContent = question.text;
+    document.getElementById('test-progress').textContent = 
+        `Вопрос ${currentTest.currentQuestionIndex + 1} из ${currentTest.questions.length}`;
+    document.getElementById('answer-input').value = '';
+}
+
+function handleNextQuestion() {
+    const answer = document.getElementById('answer-input').value.trim();
+    
+    if (!answer) {
+        document.getElementById('test-msg').textContent = 'Пожалуйста, введите ответ';
+        return;
+    }
+
+    currentTest.userAnswers.push(answer);
+    currentTest.currentQuestionIndex++;
+    
+    if (currentTest.currentQuestionIndex < currentTest.questions.length) {
+        showCurrentQuestion();
+    } else {
+        completeTest();
+    }
+}
+
+function completeTest() {
+    const users = CMMSStorage.getUsers();
+    
+    // Помечаем, что сотрудник прошел обучение
+    users[currentUser.login].firstLogin = false;
+    CMMSStorage.saveUsers(users);
+    
+    // Сохраняем результаты (только для админа)
+    const trainingData = CMMSStorage.getTrainingData();
+    let correctAnswers = 0;
+    
+    currentTest.userAnswers.forEach((answer, index) => {
+        if (answer.toLowerCase() === trainingData.questions[index].correctAnswer.toLowerCase()) {
+            correctAnswers++;
+        }
+    });
+
+    CMMSStorage.saveTestResult({
+        user: currentUser.login,
+        date: new Date().toLocaleDateString('ru-RU'),
+        score: `${correctAnswers}/${trainingData.questions.length}`,
+        status: correctAnswers >= trainingData.questions.length * 0.7 ? 'Сдан' : 'Не сдан'
+    });
+
+    // Переход в рабочее окно
+    showWorkspace();
+}
+
+function loadResultsTable() {
+    const results = CMMSStorage.getTestResults();
+    const tbody = document.getElementById('results-body');
+    
+    tbody.innerHTML = results.map(result => `
+        <tr>
+            <td>${result.user}</td>
+            <td>${result.date}</td>
+            <td>${result.score}</td>
+            <td>${result.status}</td>
+        </tr>
+    `).join('');
+}
+
+function logout() {
+    currentUser = null;
+    ScreenManager.show('login-screen');
+    document.getElementById('login').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('login-msg').textContent = '';
+}
 </script>
 </body>
 </html>
