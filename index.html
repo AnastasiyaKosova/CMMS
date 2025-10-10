@@ -6,7 +6,7 @@
 <title>CMMS — Система управления обслуживанием</title>
 <style>
   body {margin:0; font-family: Inter, sans-serif; background: #0f1724; color: #e6eef6; display:flex; justify-content:center; align-items:flex-start; padding-top:20px;}
-  .screen {display:none; padding:20px; border-radius:12px; background: #0b1220; width:90%; max-width:800px; box-shadow:0 6px 18px rgba(2,6,23,0.6);}
+  .screen {display:none; padding:20px; border-radius:12px; background: #0b1220; width:95%; max-width:1200px; box-shadow:0 6px 18px rgba(2,6,23,0.6);}
   .active {display:block;}
   
   .admin-panel { background: #1e293b; border-left: 4px solid #06b6d4; }
@@ -20,15 +20,70 @@
   .btn-danger {background:#ef4444;}
   .btn-success {background:#10b981;}
   .btn-secondary {background:#64748b;}
+  .btn-warning {background:#f59e0b;}
   .note {font-size:12px; color:#94a3b8; margin-bottom:12px;}
   .card {background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04)); border-radius:12px; padding:14px; box-shadow:0 6px 18px rgba(2,6,23,0.6); margin-bottom:12px;}
   
   .admin-dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
   .admin-card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; text-align: center; }
   .admin-card h3 { margin-top: 0; }
+  
+  .equipment-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+  .equipment-stats div { padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; text-align: center; }
+  .stat-value { font-size: 24px; font-weight: bold; margin: 5px 0; }
+  
+  .status-operational { color: #10b981; }
+  .status-maintenance { color: #f59e0b; }
+  .status-failed { color: #ef4444; }
+  .status-pending { color: #8b5cf6; }
+  .status-standby { color: #64748b; }
+  
+  .api-status { position: fixed; top: 10px; right: 10px; padding: 5px 10px; border-radius: 5px; font-size: 12px; }
+  .api-online { background: #10b981; color: white; }
+  .api-offline { background: #ef4444; color: white; }
+  
+  .workspace-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+  .workspace-section { min-height: 300px; }
+  
+  .equipment-card { background: rgba(255,255,255,0.02); border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid; }
+  .equipment-card.operational { border-left-color: #10b981; }
+  .equipment-card.maintenance { border-left-color: #f59e0b; }
+  .equipment-card.failed { border-left-color: #ef4444; }
+  .equipment-card.standby { border-left-color: #64748b; }
+  
+  .equipment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .equipment-name { font-weight: bold; font-size: 16px; }
+  .equipment-status { padding: 4px 8px; border-radius: 6px; font-size: 12px; background: rgba(255,255,255,0.1); }
+  
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+  .metric { text-align: center; padding: 5px; background: rgba(255,255,255,0.03); border-radius: 5px; }
+  .metric-value { font-weight: bold; font-size: 14px; }
+  .metric-label { font-size: 10px; color: #94a3b8; }
+  
+  .action-buttons { display: flex; gap: 5px; margin-top: 10px; }
+  .action-btn { padding: 6px 10px; font-size: 11px; }
+  
+  .tab-container { margin: 20px 0; }
+  .tab-buttons { display: flex; gap: 5px; margin-bottom: 15px; }
+  .tab-btn { padding: 8px 16px; background: rgba(255,255,255,0.05); border: none; border-radius: 6px; color: #e6eef6; cursor: pointer; }
+  .tab-btn.active { background: #06b6d4; color: #052026; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  
+  .alert-banner { background: #ef4444; color: white; padding: 10px; border-radius: 6px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+  .alert-banner.warning { background: #f59e0b; }
+  
+  .maintenance-schedule { margin-top: 15px; }
+  .schedule-item { padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 8px; }
+  
+  .loading { opacity: 0.6; pointer-events: none; }
+  .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+  @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 </style>
 </head>
 <body>
+
+<div id="api-status" class="api-status api-offline">API: Оффлайн</div>
 
 <!-- Экран 1: Вход -->
 <div id="login-screen" class="screen active">
@@ -66,6 +121,7 @@
     <h3>📊 Быстрый доступ</h3>
     <button id="view-results-btn">Посмотреть результаты тестов</button>
     <button id="manage-users-btn">Управление пользователями</button>
+    <button id="system-status-btn">Статус системы</button>
   </div>
 
   <button class="btn-secondary" id="logout-admin">🚪 Выйти</button>
@@ -95,17 +151,18 @@
 <!-- Экран 4: Просмотр результатов -->
 <div id="results-screen" class="screen admin-panel">
   <h2>📊 Результаты тестирования сотрудников</h2>
-  <table class="results-table">
+  <div id="results-loading" class="skeleton" style="height: 200px; display: none;"></div>
+  <table class="results-table" id="results-table" style="display: none;">
     <thead>
       <tr>
         <th>Сотрудник</th>
         <th>Дата теста</th>
         <th>Результат</th>
         <th>Статус</th>
+        <th>Источник</th>
       </tr>
     </thead>
     <tbody id="results-body">
-      <!-- Результаты будут здесь -->
     </tbody>
   </table>
   <button class="btn-secondary" id="back-to-admin-from-results">← Назад в панель администратора</button>
@@ -133,43 +190,152 @@
   <div id="test-msg" class="note"></div>
 </div>
 
-<!-- Экран 7: Рабочее окно -->
+<!-- Экран 7: РЕАЛЬНОЕ РАБОЧЕЕ ОКНО -->
 <div id="workspace-screen" class="screen">
-  <h2>🛠️ Рабочее окно CMMS</h2>
-  
-  <div class="card">
-    <h3>Добро пожаловать в рабочую зону!</h3>
-    <p>Вы вошли как: <strong id="current-user-role"></strong></p>
-    
-    <div style="display: flex; gap: 10px; margin: 15px 0;">
-      <button onclick="alert('Функция просмотра оборудования')">📊 Оборудование</button>
-      <button onclick="alert('Функция отчетов')">📈 Отчеты</button>
-      <button onclick="alert('Функция уведомлений')">🔔 Уведомления</button>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="margin: 0;">🛠️ Рабочее окно CMMS</h2>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <span id="current-user-role"></span>
+      <span id="api-status-badge" class="status-failed" style="padding: 4px 8px; border-radius: 6px; font-size: 12px; background: rgba(239,68,68,0.2);">Отключен</span>
+      <button class="btn-secondary" id="logout-workspace">🚪 Выйти</button>
     </div>
   </div>
 
-  <!-- Для админа показываем дополнительные функции -->
-  <div id="admin-workspace-features" style="display: none;">
-    <div class="card">
-      <h3>👑 Административные функции</h3>
-      <div style="display: flex; gap: 10px;">
-        <button onclick="alert('Управление пользователями')">👥 Пользователи</button>
-        <button onclick="alert('Системные настройки')">⚙️ Настройки</button>
-        <button onclick="ScreenManager.show('admin-setup-screen')">📚 Настроить обучение</button>
+  <!-- Статистика оборудования -->
+  <div class="card">
+    <h3>📊 Общая статистика</h3>
+    <div class="equipment-stats" id="equipment-stats">
+      <div>
+        <div class="metric-label">Всего оборудования</div>
+        <div class="stat-value" id="total-equipment">0</div>
+      </div>
+      <div>
+        <div class="metric-label">В работе</div>
+        <div class="stat-value status-operational" id="operational-count">0</div>
+      </div>
+      <div>
+        <div class="metric-label">На ТО</div>
+        <div class="stat-value status-maintenance" id="maintenance-count">0</div>
+      </div>
+      <div>
+        <div class="metric-label">Неисправно</div>
+        <div class="stat-value status-failed" id="failed-count">0</div>
       </div>
     </div>
   </div>
 
-  <button class="btn-secondary" id="logout-workspace">🚪 Выйти</button>
+  <!-- Алерты и уведомления -->
+  <div id="alerts-container"></div>
+
+  <!-- Табы для разных разделов -->
+  <div class="tab-container">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab('equipment-tab')">🏭 Оборудование</button>
+      <button class="tab-btn" onclick="switchTab('maintenance-tab')">🔧 Техобслуживание</button>
+      <button class="tab-btn" onclick="switchTab('stops-tab')">⏸️ Остановки</button>
+      <button class="tab-btn" onclick="switchTab('reports-tab')">📈 Отчеты</button>
+    </div>
+
+    <!-- Вкладка оборудования -->
+    <div id="equipment-tab" class="tab-content active">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+        <h3 style="margin: 0;">Список оборудования</h3>
+        <div>
+          <select id="department-filter" onchange="filterEquipment()" style="width: auto; display: inline-block; margin-right: 10px;">
+            <option value="">Все цеха</option>
+            <option value="Цех №1">Цех №1</option>
+            <option value="Цех №2">Цех №2</option>
+            <option value="Цех №3">Цех №3</option>
+          </select>
+          <select id="status-filter" onchange="filterEquipment()" style="width: auto; display: inline-block;">
+            <option value="">Все статусы</option>
+            <option value="operational">В работе</option>
+            <option value="maintenance">На ТО</option>
+            <option value="failed">Неисправно</option>
+            <option value="standby">Резерв</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="equipment-list">
+        <!-- Список оборудования будет здесь -->
+      </div>
+    </div>
+
+    <!-- Вкладка техобслуживания -->
+    <div id="maintenance-tab" class="tab-content">
+      <h3>📅 График технического обслуживания</h3>
+      <div class="maintenance-schedule" id="maintenance-schedule">
+        <!-- График ТО будет здесь -->
+      </div>
+      
+      <h3 style="margin-top: 20px;">🛠️ Активные работы по ТО</h3>
+      <div id="active-maintenance">
+        <!-- Активные работы ТО будут здесь -->
+      </div>
+    </div>
+
+    <!-- Вкладка остановок -->
+    <div id="stops-tab" class="tab-content">
+      <h3>⏸️ История остановок</h3>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Оборудование</th>
+            <th>Тип остановки</th>
+            <th>Начало</th>
+            <th>Продолжительность</th>
+            <th>Статус</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody id="stops-history">
+          <!-- История остановок будет здесь -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Вкладка отчетов -->
+    <div id="reports-tab" class="tab-content">
+      <h3>📈 Аналитика и отчеты</h3>
+      <div class="workspace-grid">
+        <div class="card">
+          <h4>📊 Загрузка оборудования</h4>
+          <div id="utilization-chart" style="height: 200px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 8px;">
+            <p>График загрузки будет здесь</p>
+          </div>
+        </div>
+        <div class="card">
+          <h4>🔧 Статистика ТО</h4>
+          <div id="maintenance-stats" style="height: 200px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 8px;">
+            <p>Статистика ТО будет здесь</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Административные функции -->
+  <div id="admin-workspace-features" style="display: none; margin-top: 20px;">
+    <div class="card">
+      <h3>👑 Административные функции</h3>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button onclick="showUserManagement()">👥 Пользователи</button>
+        <button onclick="showSystemSettings()">⚙️ Настройки</button>
+        <button onclick="ScreenManager.show('admin-setup-screen')">📚 Настроить обучение</button>
+        <button onclick="addNewEquipment()">➕ Добавить оборудование</button>
+        <button onclick="generateReport()">📄 Сформировать отчет</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-// Система хранения данных
+// ==================== СИСТЕМА ХРАНЕНИЯ ====================
 class CMMSStorage {
     static getUsers() {
         const storedUsers = JSON.parse(localStorage.getItem('cmms_users'));
         if (!storedUsers) {
-            // Первый запуск - создаем дефолтных пользователей
             const defaultUsers = {
                 'admin': { 
                     password: 'admin123', 
@@ -211,12 +377,475 @@ class CMMSStorage {
 
     static saveTestResult(result) {
         const results = this.getTestResults();
-        results.push(result);
+        results.push({...result, source: 'local'});
         localStorage.setItem('cmms_results', JSON.stringify(results));
     }
 }
 
-// Управление экранами
+// ==================== РЕАЛЬНЫЕ ДАННЫЕ ОБОРУДОВАНИЯ ====================
+class EquipmentManager {
+    static equipment = [
+        {
+            id: 1,
+            name: "Пресс гидравлический",
+            type: "Пресс",
+            department: "Цех №1",
+            status: "operational",
+            lastMaintenance: "2024-01-15",
+            nextMaintenance: "2024-02-15",
+            metrics: {
+                temperature: "65°C",
+                pressure: "120 bar",
+                cycles: "12,458"
+            },
+            utilization: 85
+        },
+        {
+            id: 2,
+            name: "Фрезерный станок",
+            type: "Станок",
+            department: "Цех №2", 
+            status: "maintenance",
+            lastMaintenance: "2024-01-10",
+            nextMaintenance: "2024-01-25",
+            metrics: {
+                temperature: "45°C",
+                vibration: "2.3 mm/s",
+                hours: "1,234"
+            },
+            utilization: 60
+        },
+        {
+            id: 3,
+            name: "Конвейерная линия",
+            type: "Конвейер",
+            department: "Цех №1",
+            status: "operational",
+            lastMaintenance: "2024-01-18",
+            nextMaintenance: "2024-02-18",
+            metrics: {
+                speed: "2.5 m/s",
+                load: "85%",
+                uptime: "99.2%"
+            },
+            utilization: 92
+        },
+        {
+            id: 4,
+            name: "Печь термообработки",
+            type: "Печь",
+            department: "Цех №3",
+            status: "failed",
+            lastMaintenance: "2024-01-05",
+            nextMaintenance: "2024-01-20",
+            metrics: {
+                temperature: "0°C",
+                pressure: "0 bar",
+                status: "Ошибка T-104"
+            },
+            utilization: 0
+        },
+        {
+            id: 5,
+            name: "Робот-манипулятор",
+            type: "Робот",
+            department: "Цех №2",
+            status: "standby",
+            lastMaintenance: "2024-01-12",
+            nextMaintenance: "2024-02-12",
+            metrics: {
+                accuracy: "0.02 mm",
+                cycles: "8,765",
+                battery: "95%"
+            },
+            utilization: 45
+        },
+        {
+            id: 6,
+            name: "Компрессор воздушный",
+            type: "Компрессор",
+            department: "Цех №3",
+            status: "operational",
+            lastMaintenance: "2024-01-20",
+            nextMaintenance: "2024-02-20",
+            metrics: {
+                pressure: "8 bar",
+                flow: "120 m³/h",
+                temperature: "75°C"
+            },
+            utilization: 78
+        }
+    ];
+
+    static stopEvents = [
+        {
+            id: 1,
+            equipment_id: 2,
+            equipment_name: "Фрезерный станок",
+            type: "Плановое ТО",
+            start_time: "2024-01-22T08:00:00",
+            end_time: null,
+            duration: "2ч 15м",
+            status: "active",
+            description: "Замена подшипников шпинделя"
+        },
+        {
+            id: 2,
+            equipment_id: 4,
+            equipment_name: "Печь термообработки",
+            type: "Аварийная",
+            start_time: "2024-01-22T10:30:00",
+            end_time: null,
+            duration: "4ч 30м",
+            status: "active",
+            description: "Ошибка термопары T-104"
+        },
+        {
+            id: 3,
+            equipment_id: 1,
+            equipment_name: "Пресс гидравлический",
+            type: "Технологическая",
+            start_time: "2024-01-21T14:20:00",
+            end_time: "2024-01-21T15:45:00",
+            duration: "1ч 25м",
+            status: "completed",
+            description: "Переналадка на новую деталь"
+        }
+    ];
+
+    static maintenanceSchedule = [
+        {
+            id: 1,
+            equipment_id: 3,
+            equipment_name: "Конвейерная линия",
+            type: "Еженедельное ТО",
+            scheduled_date: "2024-01-25",
+            status: "scheduled",
+            duration: "2 часа"
+        },
+        {
+            id: 2,
+            equipment_id: 6,
+            equipment_name: "Компрессор воздушный",
+            type: "Месячное ТО",
+            scheduled_date: "2024-01-26",
+            status: "scheduled",
+            duration: "4 часа"
+        },
+        {
+            id: 3,
+            equipment_id: 1,
+            equipment_name: "Пресс гидравлический",
+            type: "Регламентное ТО",
+            scheduled_date: "2024-02-15",
+            status: "planned",
+            duration: "8 часов"
+        }
+    ];
+
+    static getEquipment() {
+        return this.equipment;
+    }
+
+    static getEquipmentById(id) {
+        return this.equipment.find(eq => eq.id === id);
+    }
+
+    static getStopEvents() {
+        return this.stopEvents;
+    }
+
+    static getMaintenanceSchedule() {
+        return this.maintenanceSchedule;
+    }
+
+    static updateEquipmentStatus(equipmentId, newStatus) {
+        const equipment = this.getEquipmentById(equipmentId);
+        if (equipment) {
+            equipment.status = newStatus;
+            return true;
+        }
+        return false;
+    }
+
+    static addStopEvent(event) {
+        event.id = Math.max(...this.stopEvents.map(e => e.id)) + 1;
+        this.stopEvents.unshift(event);
+        return event;
+    }
+
+    static completeStopEvent(eventId) {
+        const event = this.stopEvents.find(e => e.id === eventId);
+        if (event) {
+            event.status = 'completed';
+            event.end_time = new Date().toISOString();
+            return true;
+        }
+        return false;
+    }
+}
+
+// ==================== ОПТИМИЗИРОВАННЫЙ API СЕРВИС ====================
+class ApiService {
+    static baseURL = 'http://localhost:8000/api';
+    static token = localStorage.getItem('cmms_token');
+    static isOnline = false;
+    static cache = new Map();
+
+    static async checkConnection() {
+        // Быстрая проверка с таймаутом
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        
+        try {
+            const response = await fetch(`${this.baseURL}/health/`, {
+                method: 'GET',
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            this.isOnline = response.ok;
+            return this.isOnline;
+        } catch (error) {
+            clearTimeout(timeoutId);
+            this.isOnline = false;
+            return false;
+        }
+    }
+
+    static async login(credentials) {
+        // Сначала быстрая локальная проверка
+        const localResult = await this.fastLocalAuth(credentials);
+        if (localResult) return localResult;
+
+        // Затем пробуем API с таймаутом
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        try {
+            const data = await this.request('/auth/login/', {
+                method: 'POST',
+                body: JSON.stringify(credentials),
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (data && data.token) {
+                this.token = data.token;
+                localStorage.setItem('cmms_token', data.token);
+                return data.user;
+            }
+            return null;
+        } catch (error) {
+            clearTimeout(timeoutId);
+            return null;
+        }
+    }
+
+    static async fastLocalAuth(credentials) {
+        // Мгновенная локальная аутентификация
+        const users = CMMSStorage.getUsers();
+        const user = users[credentials.username];
+        
+        if (user && user.password === credentials.password) {
+            const mockToken = 'mock_jwt_token_' + Date.now();
+            this.token = mockToken;
+            localStorage.setItem('cmms_token', mockToken);
+            return { 
+                id: credentials.username,
+                username: credentials.username,
+                role: user.role,
+                firstLogin: user.firstLogin,
+                fullName: user.fullName
+            };
+        }
+        return null;
+    }
+
+    static async request(endpoint, options = {}) {
+        // Быстрая проверка подключения
+        await this.checkConnection();
+        this.updateApiStatus();
+
+        if (!this.isOnline) {
+            return await this.fallbackToLocalStorage(endpoint, options);
+        }
+
+        const url = `${this.baseURL}${endpoint}`;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                ...(this.token && { 'Authorization': `Bearer ${this.token}` })
+            },
+            ...options
+        };
+
+        try {
+            const response = await fetch(url, config);
+            
+            if (response.status === 401) {
+                this.handleUnauthorized();
+                return null;
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('API request failed:', error);
+            return await this.fallbackToLocalStorage(endpoint, options);
+        }
+    }
+
+    static async fallbackToLocalStorage(endpoint, options) {
+        const method = options.method || 'GET';
+        
+        switch(endpoint) {
+            case '/training/':
+                if (method === 'GET') {
+                    return CMMSStorage.getTrainingData();
+                } else if (method === 'POST') {
+                    const data = JSON.parse(options.body);
+                    CMMSStorage.saveTrainingData(data);
+                    return { success: true, source: 'local' };
+                }
+                break;
+
+            case '/test-results/':
+                if (method === 'GET') {
+                    const results = CMMSStorage.getTestResults();
+                    return results.map(r => ({...r, source: 'local'}));
+                } else if (method === 'POST') {
+                    const result = JSON.parse(options.body);
+                    CMMSStorage.saveTestResult(result);
+                    return { success: true, source: 'local' };
+                }
+                break;
+
+            case '/equipment/':
+                return EquipmentManager.getEquipment();
+
+            case '/stop-events/':
+                return EquipmentManager.getStopEvents();
+
+            case '/maintenance-schedule/':
+                return EquipmentManager.getMaintenanceSchedule();
+
+            case '/equipment/update-status/':
+                if (method === 'POST') {
+                    const body = JSON.parse(options.body);
+                    return EquipmentManager.updateEquipmentStatus(body.equipmentId, body.status);
+                }
+                break;
+
+            case '/stop-events/create/':
+                if (method === 'POST') {
+                    const body = JSON.parse(options.body);
+                    return EquipmentManager.addStopEvent(body);
+                }
+                break;
+
+            case '/stop-events/complete/':
+                if (method === 'POST') {
+                    const body = JSON.parse(options.body);
+                    return EquipmentManager.completeStopEvent(body.eventId);
+                }
+                break;
+        }
+
+        return null;
+    }
+
+    static handleUnauthorized() {
+        localStorage.removeItem('cmms_token');
+        this.token = null;
+        ScreenManager.show('login-screen');
+        alert('Сессия истекла. Пожалуйста, войдите снова.');
+    }
+
+    static updateApiStatus() {
+        const statusElement = document.getElementById('api-status');
+        const badgeElement = document.getElementById('api-status-badge');
+        
+        if (this.isOnline) {
+            statusElement.className = 'api-status api-online';
+            statusElement.textContent = 'API: Онлайн';
+            if (badgeElement) {
+                badgeElement.className = 'status-operational';
+                badgeElement.textContent = 'Подключен';
+                badgeElement.style.background = 'rgba(16,185,129,0.2)';
+            }
+        } else {
+            statusElement.className = 'api-status api-offline';
+            statusElement.textContent = 'API: Оффлайн';
+            if (badgeElement) {
+                badgeElement.className = 'status-failed';
+                badgeElement.textContent = 'Отключен';
+                badgeElement.style.background = 'rgba(239,68,68,0.2)';
+            }
+        }
+    }
+
+    // API методы
+    static async getTrainingData() {
+        return await this.request('/training/');
+    }
+
+    static async saveTrainingData(trainingData) {
+        return await this.request('/training/', {
+            method: 'POST',
+            body: JSON.stringify(trainingData)
+        });
+    }
+
+    static async getTestResults() {
+        return await this.request('/test-results/');
+    }
+
+    static async saveTestResult(result) {
+        return await this.request('/test-results/', {
+            method: 'POST',
+            body: JSON.stringify(result)
+        });
+    }
+
+    static async getEquipment() {
+        return await this.request('/equipment/');
+    }
+
+    static async getStopEvents() {
+        return await this.request('/stop-events/');
+    }
+
+    static async getMaintenanceSchedule() {
+        return await this.request('/maintenance-schedule/');
+    }
+
+    static async updateEquipmentStatus(equipmentId, status) {
+        return await this.request('/equipment/update-status/', {
+            method: 'POST',
+            body: JSON.stringify({ equipmentId, status })
+        });
+    }
+
+    static async createStopEvent(eventData) {
+        return await this.request('/stop-events/create/', {
+            method: 'POST',
+            body: JSON.stringify(eventData)
+        });
+    }
+
+    static async completeStopEvent(eventId) {
+        return await this.request('/stop-events/complete/', {
+            method: 'POST',
+            body: JSON.stringify({ eventId })
+        });
+    }
+}
+
+// ==================== УПРАВЛЕНИЕ ЭКРАНАМИ ====================
 class ScreenManager {
     static show(screenId) {
         document.querySelectorAll('.screen').forEach(screen => {
@@ -226,151 +855,294 @@ class ScreenManager {
     }
 }
 
-// Глобальные переменные
-let currentUser = null;
+// ==================== УПРАВЛЕНИЕ РАБОЧИМ ОКНОМ ====================
+class WorkspaceManager {
+    static currentTab = 'equipment-tab';
 
-// Инициализация при загрузке
-document.addEventListener('DOMContentLoaded', function() {
-    initializeAdminPanel();
-    initializeLoginSystem();
-});
-
-// Админ панель - настройка вопросов
-function initializeAdminPanel() {
-    const questionsContainer = document.getElementById('questions-container');
-    const trainingData = CMMSStorage.getTrainingData();
-
-    // Загружаем существующие вопросы
-    loadQuestions();
-
-    document.getElementById('add-question-btn').addEventListener('click', function() {
-        addNewQuestion();
-    });
-
-    document.getElementById('save-training-btn').addEventListener('click', function() {
-        saveTrainingData();
-    });
-
-    document.getElementById('admin-setup-btn').addEventListener('click', function() {
-        ScreenManager.show('admin-setup-screen');
-    });
-
-    document.getElementById('admin-workspace-btn').addEventListener('click', function() {
-        showWorkspace();
-    });
-
-    document.getElementById('view-results-btn').addEventListener('click', function() {
-        loadResultsTable();
-        ScreenManager.show('results-screen');
-    });
-
-    document.getElementById('back-to-admin-dashboard').addEventListener('click', function() {
-        ScreenManager.show('admin-dashboard-screen');
-    });
-
-    document.getElementById('back-to-admin-from-results').addEventListener('click', function() {
-        ScreenManager.show('admin-dashboard-screen');
-    });
-
-    document.getElementById('manage-users-btn').addEventListener('click', function() {
-        alert('Функция управления пользователями будет реализована позже');
-    });
-
-    function loadQuestions() {
-        questionsContainer.innerHTML = '';
-        trainingData.questions.forEach((question, index) => {
-            addQuestionToUI(question, index);
-        });
+    static async initializeWorkspace() {
+        await this.loadEquipmentData();
+        await this.loadStopEvents();
+        await this.loadMaintenanceSchedule();
+        this.updateStatistics();
+        this.checkAlerts();
     }
 
-    function addNewQuestion() {
-        if (trainingData.questions.length >= 10) {
-            alert('Максимум 10 вопросов');
+    static async loadEquipmentData() {
+        const equipment = await ApiService.getEquipment();
+        this.renderEquipmentList(equipment);
+    }
+
+    static async loadStopEvents() {
+        const events = await ApiService.getStopEvents();
+        this.renderStopEvents(events);
+    }
+
+    static async loadMaintenanceSchedule() {
+        const schedule = await ApiService.getMaintenanceSchedule();
+        this.renderMaintenanceSchedule(schedule);
+    }
+
+    static renderEquipmentList(equipment) {
+        const container = document.getElementById('equipment-list');
+        
+        container.innerHTML = equipment.map(eq => `
+            <div class="equipment-card ${eq.status}" data-id="${eq.id}" data-department="${eq.department}">
+                <div class="equipment-header">
+                    <div class="equipment-name">${eq.name}</div>
+                    <div class="equipment-status status-${eq.status}">
+                        ${this.getStatusText(eq.status)}
+                    </div>
+                </div>
+                <div style="color: #94a3b8; font-size: 14px; margin-bottom: 10px;">
+                    ${eq.type} • ${eq.department} • Загрузка: ${eq.utilization}%
+                </div>
+                
+                <div class="metrics-grid">
+                    ${Object.entries(eq.metrics).map(([key, value]) => `
+                        <div class="metric">
+                            <div class="metric-value">${value}</div>
+                            <div class="metric-label">${this.getMetricLabel(key)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="action-buttons">
+                    ${this.getActionButtons(eq)}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    static getMetricLabel(key) {
+        const labels = {
+            temperature: 'Температура',
+            pressure: 'Давление',
+            cycles: 'Циклы',
+            vibration: 'Вибрация',
+            hours: 'Часы',
+            speed: 'Скорость',
+            load: 'Нагрузка',
+            uptime: 'Активность',
+            accuracy: 'Точность',
+            battery: 'Батарея',
+            flow: 'Расход',
+            status: 'Статус'
+        };
+        return labels[key] || key;
+    }
+
+    static getStatusText(status) {
+        const statusMap = {
+            operational: 'В работе',
+            maintenance: 'На ТО',
+            failed: 'Неисправно',
+            standby: 'Резерв'
+        };
+        return statusMap[status] || status;
+    }
+
+    static getActionButtons(equipment) {
+        const baseButtons = `
+            <button class="action-btn btn-secondary" onclick="showEquipmentDetails(${equipment.id})">📋 Детали</button>
+        `;
+
+        if (equipment.status === 'operational') {
+            return baseButtons + `
+                <button class="action-btn btn-warning" onclick="startMaintenance(${equipment.id})">🔧 ТО</button>
+                <button class="action-btn btn-danger" onclick="reportFailure(${equipment.id})">⚠️ Авария</button>
+            `;
+        } else if (equipment.status === 'maintenance') {
+            return baseButtons + `
+                <button class="action-btn btn-success" onclick="completeMaintenance(${equipment.id})">✅ Завершить ТО</button>
+            `;
+        } else if (equipment.status === 'failed') {
+            return baseButtons + `
+                <button class="action-btn btn-success" onclick="repairEquipment(${equipment.id})">🔧 Ремонт</button>
+            `;
+        }
+
+        return baseButtons;
+    }
+
+    static renderStopEvents(events) {
+        const container = document.getElementById('stops-history');
+        
+        container.innerHTML = events.map(event => `
+            <tr>
+                <td>${event.equipment_name}</td>
+                <td>${event.type}</td>
+                <td>${new Date(event.start_time).toLocaleString('ru-RU')}</td>
+                <td>${event.duration}</td>
+                <td><span class="status-${event.status}">${event.status === 'active' ? 'Активно' : 'Завершено'}</span></td>
+                <td>
+                    ${event.status === 'active' ? 
+                        `<button class="action-btn btn-success" onclick="completeStopEvent(${event.id})">Завершить</button>` : 
+                        '<span>—</span>'
+                    }
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    static renderMaintenanceSchedule(schedule) {
+        const container = document.getElementById('maintenance-schedule');
+        
+        container.innerHTML = schedule.map(item => `
+            <div class="schedule-item">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>${item.equipment_name}</strong>
+                        <div style="color: #94a3b8; font-size: 12px;">${item.type} • ${item.duration}</div>
+                    </div>
+                    <div>
+                        <span class="status-${item.status}">${this.getScheduleStatusText(item.status)}</span>
+                        <div style="color: #94a3b8; font-size: 12px; text-align: right;">${new Date(item.scheduled_date).toLocaleDateString('ru-RU')}</div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    static getScheduleStatusText(status) {
+        const statusMap = {
+            scheduled: 'Запланировано',
+            active: 'Выполняется',
+            completed: 'Завершено',
+            planned: 'Планируется'
+        };
+        return statusMap[status] || status;
+    }
+
+    static updateStatistics() {
+        const equipment = EquipmentManager.getEquipment();
+        const total = equipment.length;
+        const operational = equipment.filter(eq => eq.status === 'operational').length;
+        const maintenance = equipment.filter(eq => eq.status === 'maintenance').length;
+        const failed = equipment.filter(eq => eq.status === 'failed').length;
+
+        document.getElementById('total-equipment').textContent = total;
+        document.getElementById('operational-count').textContent = operational;
+        document.getElementById('maintenance-count').textContent = maintenance;
+        document.getElementById('failed-count').textContent = failed;
+    }
+
+    static checkAlerts() {
+        const alerts = [];
+        const equipment = EquipmentManager.getEquipment();
+        const stopEvents = EquipmentManager.getStopEvents();
+
+        // Проверяем критические неисправности
+        const criticalFailures = equipment.filter(eq => eq.status === 'failed');
+        if (criticalFailures.length > 0) {
+            alerts.push({
+                type: 'critical',
+                message: `Обнаружено ${criticalFailures.length} неисправных единиц оборудования`,
+                equipment: criticalFailures
+            });
+        }
+
+        // Проверяем активные аварийные остановки
+        const activeEmergencyStops = stopEvents.filter(event => 
+            event.status === 'active' && event.type === 'Аварийная'
+        );
+        if (activeEmergencyStops.length > 0) {
+            alerts.push({
+                type: 'warning',
+                message: `Активные аварийные остановки: ${activeEmergencyStops.length}`,
+                events: activeEmergencyStops
+            });
+        }
+
+        this.renderAlerts(alerts);
+    }
+
+    static renderAlerts(alerts) {
+        const container = document.getElementById('alerts-container');
+        
+        if (alerts.length === 0) {
+            container.innerHTML = '';
             return;
         }
-        
-        const newQuestion = {
-            text: '',
-            correctAnswer: ''
-        };
-        
-        trainingData.questions.push(newQuestion);
-        addQuestionToUI(newQuestion, trainingData.questions.length - 1);
-    }
 
-    function addQuestionToUI(question, index) {
-        const questionDiv = document.createElement('div');
-        questionDiv.className = 'question-item';
-        questionDiv.innerHTML = `
-            <strong>Вопрос ${index + 1}:</strong>
-            <input type="text" class="question-text" data-index="${index}" 
-                   placeholder="Текст вопроса" value="${question.text}">
-            <input type="text" class="question-answer" data-index="${index}" 
-                   placeholder="Правильный ответ" value="${question.correctAnswer}">
-            <button class="btn-danger remove-question" data-index="${index}">🗑️ Удалить</button>
-        `;
-        questionsContainer.appendChild(questionDiv);
-
-        // Обработчики событий
-        questionDiv.querySelector('.remove-question').addEventListener('click', function() {
-            const index = parseInt(this.getAttribute('data-index'));
-            trainingData.questions.splice(index, 1);
-            loadQuestions();
-        });
-    }
-
-    function saveTrainingData() {
-        // Сохраняем материал
-        trainingData.material = document.getElementById('training-material').value;
-        
-        // Сохраняем вопросы
-        document.querySelectorAll('.question-text').forEach(input => {
-            const index = parseInt(input.getAttribute('data-index'));
-            trainingData.questions[index].text = input.value;
-        });
-        
-        document.querySelectorAll('.question-answer').forEach(input => {
-            const index = parseInt(input.getAttribute('data-index'));
-            trainingData.questions[index].correctAnswer = input.value;
-        });
-
-        CMMSStorage.saveTrainingData(trainingData);
-        alert('✅ Обучающие материалы сохранены!');
+        container.innerHTML = alerts.map(alert => `
+            <div class="alert-banner ${alert.type === 'critical' ? '' : 'warning'}">
+                <div>
+                    <strong>${alert.type === 'critical' ? '🚨 КРИТИЧЕСКОЕ СОБЫТИЕ' : '⚠️ ВНИМАНИЕ'}</strong>
+                    <div>${alert.message}</div>
+                </div>
+                <button class="action-btn" onclick="this.parentElement.remove()">✕</button>
+            </div>
+        `).join('');
     }
 }
 
-// Система входа и навигации
-function initializeLoginSystem() {
-    document.getElementById('login-btn').addEventListener('click', handleLogin);
+// ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+let currentUser = null;
+let currentTest = {
+    questions: [],
+    currentQuestionIndex: 0,
+    userAnswers: []
+};
 
-    document.getElementById('logout-admin').addEventListener('click', logout);
-    document.getElementById('logout-study').addEventListener('click', logout);
-    document.getElementById('logout-workspace').addEventListener('click', logout);
-
-    document.getElementById('start-test-btn').addEventListener('click', function() {
-        startEmployeeTest();
-    });
-
-    document.getElementById('next-question-btn').addEventListener('click', handleNextQuestion);
-}
-
-function handleLogin() {
+// ==================== ОПТИМИЗИРОВАННАЯ СИСТЕМА ВХОДА ====================
+async function handleLogin() {
     const login = document.getElementById('login').value.trim();
     const password = document.getElementById('password').value.trim();
-    const users = CMMSStorage.getUsers();
 
-    if (!users[login] || users[login].password !== password) {
-        document.getElementById('login-msg').textContent = 'Неверный логин или пароль';
+    // Быстрая валидация
+    if (!login || !password) {
+        document.getElementById('login-msg').textContent = 'Заполните все поля';
         return;
     }
 
-    currentUser = { login, ...users[login] };
-    
+    // Мгновенный отклик UI
+    const loginBtn = document.getElementById('login-btn');
+    loginBtn.classList.add('loading');
+    loginBtn.textContent = 'Вход...';
+
+    try {
+        // Параллельные проверки для максимальной скорости
+        const [apiUser, localUsers] = await Promise.all([
+            ApiService.login({ username: login, password }),
+            CMMSStorage.getUsers()
+        ]);
+
+        // Сначала проверяем быстрый API ответ
+        if (apiUser) {
+            currentUser = apiUser;
+            handleSuccessfulLogin();
+            return;
+        }
+
+        // Затем локальных пользователей
+        if (!localUsers[login] || localUsers[login].password !== password) {
+            document.getElementById('login-msg').textContent = 'Неверный логин или пароль';
+            return;
+        }
+
+        currentUser = { 
+            login, 
+            ...localUsers[login],
+            id: login
+        };
+        handleSuccessfulLogin();
+
+    } catch (error) {
+        console.error('Login error:', error);
+        document.getElementById('login-msg').textContent = 'Ошибка при входе';
+    } finally {
+        loginBtn.classList.remove('loading');
+        loginBtn.textContent = 'Войти';
+    }
+}
+
+function handleSuccessfulLogin() {
+    // Мгновенный переход без задержек
     if (currentUser.role === 'admin') {
-        // Админ попадает в дашборд
         ScreenManager.show('admin-dashboard-screen');
+        // Фоновая загрузка данных
+        setTimeout(() => loadAdminData(), 50);
     } else {
-        // Инженер проходит обычный путь
         if (currentUser.firstLogin) {
             loadStudyMaterials();
             ScreenManager.show('study-screen');
@@ -380,30 +1152,160 @@ function handleLogin() {
     }
 }
 
-function showWorkspace() {
-    // Показываем роль пользователя
-    document.getElementById('current-user-role').textContent = 
-        currentUser.role === 'admin' ? '👑 Администратор' : '⚙️ Инженер';
-    
-    // Показываем/скрываем админские функции
-    const adminFeatures = document.getElementById('admin-workspace-features');
-    adminFeatures.style.display = currentUser.role === 'admin' ? 'block' : 'none';
-    
-    ScreenManager.show('workspace-screen');
+// Фоновая загрузка данных для админа
+async function loadAdminData() {
+    try {
+        await Promise.allSettled([
+            ApiService.getTrainingData(),
+            ApiService.getTestResults()
+        ]);
+    } catch (error) {
+        // Игнорируем ошибки фоновой загрузки
+    }
 }
 
+// ==================== ФУНКЦИИ УПРАВЛЕНИЯ ОБОРУДОВАНИЕМ ====================
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    document.getElementById(tabName).classList.add('active');
+    event.target.classList.add('active');
+    
+    WorkspaceManager.currentTab = tabName;
+}
+
+function filterEquipment() {
+    const departmentFilter = document.getElementById('department-filter').value;
+    const statusFilter = document.getElementById('status-filter').value;
+    
+    const equipmentCards = document.querySelectorAll('.equipment-card');
+    
+    equipmentCards.forEach(card => {
+        const department = card.getAttribute('data-department');
+        const status = card.className.includes('operational') ? 'operational' :
+                     card.className.includes('maintenance') ? 'maintenance' :
+                     card.className.includes('failed') ? 'failed' : 'standby';
+        
+        const departmentMatch = !departmentFilter || department === departmentFilter;
+        const statusMatch = !statusFilter || status === statusFilter;
+        
+        card.style.display = (departmentMatch && statusMatch) ? 'block' : 'none';
+    });
+}
+
+async function startMaintenance(equipmentId) {
+    if (confirm('Начать техническое обслуживание этого оборудования?')) {
+        const success = await ApiService.updateEquipmentStatus(equipmentId, 'maintenance');
+        if (success) {
+            const equipment = EquipmentManager.getEquipmentById(equipmentId);
+            await ApiService.createStopEvent({
+                equipment_id: equipmentId,
+                equipment_name: equipment.name,
+                type: 'Плановое ТО',
+                start_time: new Date().toISOString(),
+                status: 'active',
+                description: 'Начало планового технического обслуживания'
+            });
+            
+            alert('Техническое обслуживание начато');
+            WorkspaceManager.initializeWorkspace();
+        }
+    }
+}
+
+async function completeMaintenance(equipmentId) {
+    if (confirm('Завершить техническое обслуживание?')) {
+        const success = await ApiService.updateEquipmentStatus(equipmentId, 'operational');
+        if (success) {
+            alert('Техническое обслуживание завершено');
+            WorkspaceManager.initializeWorkspace();
+        }
+    }
+}
+
+async function reportFailure(equipmentId) {
+    const reason = prompt('Причина аварии:');
+    if (reason) {
+        const success = await ApiService.updateEquipmentStatus(equipmentId, 'failed');
+        if (success) {
+            const equipment = EquipmentManager.getEquipmentById(equipmentId);
+            await ApiService.createStopEvent({
+                equipment_id: equipmentId,
+                equipment_name: equipment.name,
+                type: 'Аварийная',
+                start_time: new Date().toISOString(),
+                status: 'active',
+                description: reason
+            });
+            
+            alert('Авария зарегистрирована');
+            WorkspaceManager.initializeWorkspace();
+        }
+    }
+}
+
+async function repairEquipment(equipmentId) {
+    if (confirm('Отметить оборудование как отремонтированное?')) {
+        const success = await ApiService.updateEquipmentStatus(equipmentId, 'operational');
+        if (success) {
+            alert('Оборудование переведено в рабочий режим');
+            WorkspaceManager.initializeWorkspace();
+        }
+    }
+}
+
+async function completeStopEvent(eventId) {
+    if (confirm('Завершить эту остановку?')) {
+        const success = await ApiService.completeStopEvent(eventId);
+        if (success) {
+            alert('Остановка завершена');
+            WorkspaceManager.initializeWorkspace();
+        }
+    }
+}
+
+function showEquipmentDetails(equipmentId) {
+    const equipment = EquipmentManager.getEquipmentById(equipmentId);
+    if (equipment) {
+        alert(`Детали оборудования:\n\n` +
+              `Название: ${equipment.name}\n` +
+              `Тип: ${equipment.type}\n` +
+              `Цех: ${equipment.department}\n` +
+              `Статус: ${WorkspaceManager.getStatusText(equipment.status)}\n` +
+              `Последнее ТО: ${equipment.lastMaintenance}\n` +
+              `Следующее ТО: ${equipment.nextMaintenance}\n` +
+              `Загрузка: ${equipment.utilization}%`);
+    }
+}
+
+function addNewEquipment() {
+    alert('Форма добавления нового оборудования будет реализована');
+}
+
+function generateReport() {
+    alert('Генерация отчета будет реализована');
+}
+
+function showUserManagement() {
+    alert('Управление пользователями будет реализовано');
+}
+
+function showSystemSettings() {
+    alert('Системные настройки будут реализованы');
+}
+
+// ==================== СИСТЕМА ОБУЧЕНИЯ ====================
 function loadStudyMaterials() {
     const trainingData = CMMSStorage.getTrainingData();
     document.getElementById('study-content').innerHTML = `
         <div style="white-space: pre-wrap; line-height: 1.5;">${trainingData.material}</div>
     `;
 }
-
-let currentTest = {
-    questions: [],
-    currentQuestionIndex: 0,
-    userAnswers: []
-};
 
 function startEmployeeTest() {
     const trainingData = CMMSStorage.getTrainingData();
@@ -449,14 +1351,12 @@ function handleNextQuestion() {
     }
 }
 
-function completeTest() {
+async function completeTest() {
     const users = CMMSStorage.getUsers();
     
-    // Помечаем, что сотрудник прошел обучение
     users[currentUser.login].firstLogin = false;
     CMMSStorage.saveUsers(users);
     
-    // Сохраняем результаты (только для админа)
     const trainingData = CMMSStorage.getTrainingData();
     let correctAnswers = 0;
     
@@ -466,19 +1366,44 @@ function completeTest() {
         }
     });
 
-    CMMSStorage.saveTestResult({
+    const testResult = {
         user: currentUser.login,
         date: new Date().toLocaleDateString('ru-RU'),
         score: `${correctAnswers}/${trainingData.questions.length}`,
         status: correctAnswers >= trainingData.questions.length * 0.7 ? 'Сдан' : 'Не сдан'
-    });
+    };
 
-    // Переход в рабочее окно
+    await ApiService.saveTestResult(testResult);
     showWorkspace();
 }
 
-function loadResultsTable() {
-    const results = CMMSStorage.getTestResults();
+async function showWorkspace() {
+    document.getElementById('current-user-role').textContent = 
+        currentUser.role === 'admin' ? '👑 Администратор' : '⚙️ Инженер';
+    
+    const adminFeatures = document.getElementById('admin-workspace-features');
+    adminFeatures.style.display = currentUser.role === 'admin' ? 'block' : 'none';
+    
+    ScreenManager.show('workspace-screen');
+    
+    await WorkspaceManager.initializeWorkspace();
+}
+
+async function showResults() {
+    ScreenManager.show('results-screen');
+    
+    document.getElementById('results-loading').style.display = 'block';
+    document.getElementById('results-table').style.display = 'none';
+    
+    const results = await ApiService.getTestResults();
+    
+    document.getElementById('results-loading').style.display = 'none';
+    document.getElementById('results-table').style.display = 'table';
+    
+    updateResultsUI(results);
+}
+
+function updateResultsUI(results) {
     const tbody = document.getElementById('results-body');
     
     tbody.innerHTML = results.map(result => `
@@ -487,8 +1412,82 @@ function loadResultsTable() {
             <td>${result.date}</td>
             <td>${result.score}</td>
             <td>${result.status}</td>
+            <td>${result.source === 'local' ? '📱 Локально' : '🌐 Сервер'}</td>
         </tr>
     `).join('');
+}
+
+// Функции для админ-панели
+function loadQuestions() {
+    const questionsContainer = document.getElementById('questions-container');
+    const trainingData = CMMSStorage.getTrainingData();
+    
+    questionsContainer.innerHTML = '';
+    trainingData.questions.forEach((question, index) => {
+        addQuestionToUI(question, index);
+    });
+}
+
+function addNewQuestion() {
+    const trainingData = CMMSStorage.getTrainingData();
+    if (trainingData.questions.length >= 10) {
+        alert('Максимум 10 вопросов');
+        return;
+    }
+    
+    const newQuestion = { text: '', correctAnswer: '' };
+    trainingData.questions.push(newQuestion);
+    addQuestionToUI(newQuestion, trainingData.questions.length - 1);
+}
+
+function addQuestionToUI(question, index) {
+    const questionsContainer = document.getElementById('questions-container');
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question-item';
+    questionDiv.innerHTML = `
+        <strong>Вопрос ${index + 1}:</strong>
+        <input type="text" class="question-text" data-index="${index}" 
+               placeholder="Текст вопроса" value="${question.text}">
+        <input type="text" class="question-answer" data-index="${index}" 
+               placeholder="Правильный ответ" value="${question.correctAnswer}">
+        <button class="btn-danger remove-question" data-index="${index}">🗑️ Удалить</button>
+    `;
+    questionsContainer.appendChild(questionDiv);
+
+    questionDiv.querySelector('.remove-question').addEventListener('click', function() {
+        const index = parseInt(this.getAttribute('data-index'));
+        const trainingData = CMMSStorage.getTrainingData();
+        trainingData.questions.splice(index, 1);
+        loadQuestions();
+    });
+}
+
+async function saveTrainingData() {
+    const trainingData = {
+        material: document.getElementById('training-material').value,
+        questions: []
+    };
+
+    document.querySelectorAll('.question-text').forEach(input => {
+        const index = parseInt(input.getAttribute('data-index'));
+        if (!trainingData.questions[index]) trainingData.questions[index] = {};
+        trainingData.questions[index].text = input.value;
+    });
+
+    document.querySelectorAll('.question-answer').forEach(input => {
+        const index = parseInt(input.getAttribute('data-index'));
+        if (!trainingData.questions[index]) trainingData.questions[index] = {};
+        trainingData.questions[index].correctAnswer = input.value;
+    });
+
+    const apiResult = await ApiService.saveTrainingData(trainingData);
+    
+    if (apiResult && apiResult.success) {
+        alert(`✅ Данные сохранены (${apiResult.source === 'local' ? 'локально' : 'на сервере'})!`);
+    } else {
+        CMMSStorage.saveTrainingData(trainingData);
+        alert('✅ Данные сохранены локально!');
+    }
 }
 
 function logout() {
@@ -498,6 +1497,38 @@ function logout() {
     document.getElementById('password').value = '';
     document.getElementById('login-msg').textContent = '';
 }
+
+// ==================== ИНИЦИАЛИЗАЦИЯ ====================
+function initializeLoginSystem() {
+    document.getElementById('login-btn').addEventListener('click', handleLogin);
+    document.getElementById('logout-admin').addEventListener('click', logout);
+    document.getElementById('logout-study').addEventListener('click', logout);
+    document.getElementById('logout-workspace').addEventListener('click', logout);
+    document.getElementById('start-test-btn').addEventListener('click', startEmployeeTest);
+    document.getElementById('next-question-btn').addEventListener('click', handleNextQuestion);
+    document.getElementById('admin-setup-btn').addEventListener('click', () => ScreenManager.show('admin-setup-screen'));
+    document.getElementById('admin-workspace-btn').addEventListener('click', showWorkspace);
+    document.getElementById('view-results-btn').addEventListener('click', showResults);
+    document.getElementById('back-to-admin-dashboard').addEventListener('click', () => ScreenManager.show('admin-dashboard-screen'));
+    document.getElementById('back-to-admin-from-results').addEventListener('click', () => ScreenManager.show('admin-dashboard-screen'));
+    document.getElementById('manage-users-btn').addEventListener('click', showUserManagement);
+    document.getElementById('system-status-btn').addEventListener('click', showSystemSettings);
+    document.getElementById('add-question-btn').addEventListener('click', addNewQuestion);
+    document.getElementById('save-training-btn').addEventListener('click', saveTrainingData);
+
+    loadQuestions();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeLoginSystem();
+    
+    // Фоновая проверка подключения
+    setTimeout(() => {
+        ApiService.checkConnection().then(() => {
+            ApiService.updateApiStatus();
+        });
+    }, 100);
+});
 </script>
 </body>
 </html>
