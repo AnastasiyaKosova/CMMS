@@ -1148,6 +1148,431 @@
   </div>
 </div>
 
+<!-- ЭКРАН 16: РУКОВОДСТВО ПО ЭКСПЛУАТАЦИИ -->
+<div id="operation-manual-screen" class="screen">
+  <!-- Шапка страницы -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
+    <!-- Левый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-secondary" onclick="goToMain()">🏠 Главная</button>
+      <button class="btn-secondary" onclick="goBackToEquipmentForm()">← Назад</button>
+    </div>
+    
+    <!-- Середина - Название страницы -->
+    <h2 style="margin: 0; text-align: center; color: #06b6d4;">📖 Руководство по эксплуатации</h2>
+    
+    <!-- Правый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-success" onclick="addManual()">➕ Добавить</button>
+      <button class="btn-warning" onclick="editManual()">✏️ Редактировать</button>
+    </div>
+  </div>
+
+  <!-- Содержимое страницы -->
+  <div class="card" style="min-height: 500px;">
+    <div style="text-align: center; padding: 60px 20px;">
+      <div style="font-size: 64px; margin-bottom: 20px;">📚</div>
+      <h3 style="color: #94a3b8; margin-bottom: 15px;">Страница руководства по эксплуатации</h3>
+      <p style="color: #64748b; margin-bottom: 25px;">
+        Здесь будет отображаться руководство по эксплуатации выбранного оборудования.<br>
+        Используйте кнопки "Добавить" или "Редактировать" для работы с документацией.
+      </p>
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <button class="btn-secondary" onclick="uploadManualFile()">📤 Загрузить файл</button>
+        <button class="btn-secondary" onclick="viewManualOnline()">👁️ Просмотреть онлайн</button>
+        <button class="btn-secondary" onclick="downloadManual()">📥 Скачать</button>
+      </div>
+    </div>
+
+    <!-- Место для будущего контента -->
+    <div id="manual-content" style="display: none;">
+      <!-- Здесь будет отображаться загруженное руководство -->
+    </div>
+  </div>
+
+  <!-- Информация о текущем оборудовании -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>📋 Информация об оборудовании</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div>
+        <strong>Оборудование:</strong> <span id="current-equipment-name">Не выбрано</span><br>
+        <strong>Категория:</strong> <span id="current-equipment-category">Не выбрана</span>
+      </div>
+      <div>
+        <strong>Порядковый номер:</strong> <span id="current-equipment-serial">Не указан</span><br>
+        <strong>Статус документации:</strong> <span style="color: #ef4444;">❌ Отсутствует</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 17: ПРОСМОТР ЭЛЕКТРИЧЕСКОЙ СХЕМЫ -->
+<div id="electrical-schemes-screen" class="screen">
+  <!-- Шапка страницы -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
+    <!-- Левый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-secondary" onclick="goToMain()">🏠 Главная</button>
+      <button class="btn-secondary" onclick="goBackToEquipmentForm()">← Назад</button>
+    </div>
+    
+    <!-- Середина - Название страницы -->
+    <h2 style="margin: 0; text-align: center; color: #06b6d4;">🔌 Просмотр электрической схемы</h2>
+    
+    <!-- Правый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-success" onclick="addElectricalScheme()">➕ Добавить</button>
+      <button class="btn-warning" onclick="editElectricalScheme()">✏️ Редактировать</button>
+    </div>
+  </div>
+
+  <!-- Содержимое страницы -->
+  <div class="card" style="min-height: 500px;">
+    <div style="text-align: center; padding: 60px 20px;">
+      <div style="font-size: 64px; margin-bottom: 20px;">🔧</div>
+      <h3 style="color: #94a3b8; margin-bottom: 15px;">Страница электрических схем</h3>
+      <p style="color: #64748b; margin-bottom: 25px;">
+        Здесь будет отображаться электрическая схема выбранного оборудования.<br>
+        Используйте кнопки "Добавить" или "Редактировать" для работы со схемами.
+      </p>
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <button class="btn-secondary" onclick="uploadSchemeFile()">📤 Загрузить схему</button>
+        <button class="btn-secondary" onclick="viewSchemeOnline()">👁️ Просмотреть схему</button>
+        <button class="btn-secondary" onclick="downloadScheme()">📥 Скачать схему</button>
+      </div>
+    </div>
+
+    <!-- Место для будущего контента -->
+    <div id="scheme-content" style="display: none;">
+      <!-- Здесь будет отображаться электрическая схема -->
+    </div>
+  </div>
+
+  <!-- Информация о схемах -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>📋 Информация об электрических схемах</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div>
+        <strong>Оборудование:</strong> <span id="current-scheme-equipment-name">Не выбрано</span><br>
+        <strong>Тип схемы:</strong> <span id="current-scheme-type">Не указан</span>
+      </div>
+      <div>
+        <strong>Версия схемы:</strong> <span id="current-scheme-version">1.0</span><br>
+        <strong>Статус:</strong> <span style="color: #ef4444;">❌ Схема не загружена</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Список доступных схем -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>📁 Доступные электрические схемы</h4>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+      <div class="equipment-item" onclick="selectScheme(1)">
+        <strong>Основная схема</strong>
+        <div style="font-size: 12px; color: #94a3b8;">Версия 2.1</div>
+        <div style="font-size: 12px; color: #10b981;">● Активна</div>
+      </div>
+      <div class="equipment-item" onclick="selectScheme(2)">
+        <strong>Схема управления</strong>
+        <div style="font-size: 12px; color: #94a3b8;">Версия 1.5</div>
+        <div style="font-size: 12px; color: #f59e0b;">● В разработке</div>
+      </div>
+      <div class="equipment-item" onclick="selectScheme(3)">
+        <strong>Силовая часть</strong>
+        <div style="font-size: 12px; color: #94a3b8;">Версия 3.0</div>
+        <div style="font-size: 12px; color: #10b981;">● Активна</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 18: ПРОСМОТР ФОТОГРАФИЙ ОБОРУДОВАНИЯ -->
+<div id="equipment-photos-screen" class="screen">
+  <!-- Шапка страницы -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
+    <!-- Левый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-secondary" onclick="goToMain()">🏠 Главная</button>
+      <button class="btn-secondary" onclick="goBackToEquipmentForm()">← Назад</button>
+    </div>
+    
+    <!-- Середина - Название страницы -->
+    <h2 style="margin: 0; text-align: center; color: #06b6d4;">📷 Просмотр фотографии оборудования</h2>
+    
+    <!-- Правый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-success" onclick="addEquipmentPhoto()">➕ Добавить фото</button>
+      <button class="btn-warning" onclick="editEquipmentPhoto()">✏️ Редактировать</button>
+    </div>
+  </div>
+
+  <!-- Основная галерея фотографий -->
+  <div class="card">
+    <h3>🖼️ Галерея фотографий оборудования</h3>
+    
+    <!-- Основное фото -->
+    <div style="text-align: center; margin-bottom: 30px;">
+      <div style="font-size: 48px; margin-bottom: 15px;">📸</div>
+      <h4 style="color: #94a3b8; margin-bottom: 10px;">Основная фотография оборудования</h4>
+      <div style="background: rgba(255,255,255,0.02); border: 2px dashed #64748b; border-radius: 12px; padding: 40px; margin: 0 auto; max-width: 500px;">
+        <div style="color: #64748b; margin-bottom: 15px;">Фотография не загружена</div>
+        <button class="btn-success" onclick="uploadMainPhoto()">📤 Загрузить основное фото</button>
+      </div>
+    </div>
+
+    <!-- Дополнительные фотографии -->
+    <div>
+      <h4 style="margin-bottom: 15px;">📁 Дополнительные фотографии</h4>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+        
+        <!-- Пример загруженной фотографии -->
+        <div class="equipment-item" style="text-align: center; cursor: pointer;" onclick="viewPhotoFullscreen(1)">
+          <div style="font-size: 32px; margin-bottom: 10px;">🖼️</div>
+          <strong>Общий вид</strong>
+          <div style="font-size: 12px; color: #94a3b8;">12.12.2024</div>
+          <div style="font-size: 12px; color: #10b981;">● Основная</div>
+        </div>
+        
+        <div class="equipment-item" style="text-align: center; cursor: pointer;" onclick="viewPhotoFullscreen(2)">
+          <div style="font-size: 32px; margin-bottom: 10px;">🔧</div>
+          <strong>Кабина управления</strong>
+          <div style="font-size: 12px; color: #94a3b8;">10.12.2024</div>
+          <div style="font-size: 12px; color: #f59e0b;">● Дополнительная</div>
+        </div>
+        
+        <div class="equipment-item" style="text-align: center; cursor: pointer;" onclick="viewPhotoFullscreen(3)">
+          <div style="font-size: 32px; margin-bottom: 10px;">⚡</div>
+          <strong>Электрошкаф</strong>
+          <div style="font-size: 12px; color: #94a3b8;">08.12.2024</div>
+          <div style="font-size: 12px; color: #f59e0b;">● Дополнительная</div>
+        </div>
+        
+        <!-- Кнопка добавления новой фотографии -->
+        <div class="equipment-item" style="text-align: center; cursor: pointer; border: 2px dashed #06b6d4; background: rgba(6,182,212,0.05);" onclick="uploadAdditionalPhoto()">
+          <div style="font-size: 32px; margin-bottom: 10px;">➕</div>
+          <strong>Добавить фото</strong>
+          <div style="font-size: 12px; color: #94a3b8;">Нажмите чтобы загрузить</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Информация о фотографиях -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>📋 Информация о фотографиях</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div>
+        <strong>Оборудование:</strong> <span id="current-photo-equipment-name">Не выбрано</span><br>
+        <strong>Всего фотографий:</strong> <span id="total-photos-count">3</span>
+      </div>
+      <div>
+        <strong>Последнее обновление:</strong> <span id="last-photo-update">12.12.2024</span><br>
+        <strong>Статус:</strong> <span style="color: #10b981;">✅ Фотографии загружены</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Действия с фотографиями -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>⚙️ Действия с фотографиями</h4>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button class="btn-secondary" onclick="organizePhotos()">📂 Организовать фото</button>
+      <button class="btn-secondary" onclick="createPhotoAlbum()">📒 Создать альбом</button>
+      <button class="btn-secondary" onclick="exportPhotos()">📤 Экспорт фото</button>
+      <button class="btn-secondary" onclick="printPhotos()">🖨️ Печать фото</button>
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 19: ЧЕРТЕЖИ И СХЕМЫ ДВИГАТЕЛЕЙ -->
+<div id="engine-drawings-schemes-screen" class="screen">
+  <!-- Шапка страницы -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
+    <!-- Левый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-secondary" onclick="goToMain()">🏠 Главная</button>
+      <button class="btn-secondary" onclick="goBackToEquipmentForm()">← Назад</button>
+    </div>
+    
+    <!-- Середина - Название страницы -->
+    <h2 style="margin: 0; text-align: center; color: #06b6d4;">🛠️ Чертежи и схемы двигателей</h2>
+    
+    <!-- Правый верхний угол - ТОЛЬКО ДЛЯ АДМИНИСТРАТОРА -->
+    <div id="admin-engine-drawings-buttons" style="display: none; gap: 10px;">
+      <button class="btn-success" onclick="addEngineDrawingPDF()">➕ Добавить PDF</button>
+      <button class="btn-warning" onclick="addEngineDrawingScan()">📄 Добавить скан</button>
+      <button class="btn-info" onclick="addEngineDrawingPhoto()">📷 Добавить фото</button>
+    </div>
+  </div>
+
+  <!-- Основное окно просмотра - ПУСТОЕ -->
+  <div class="card" style="min-height: 500px; display: flex; flex-direction: column;">
+    <div id="engine-drawings-content-area" style="flex: 1; display: flex; justify-content: center; align-items: center; text-align: center;">
+      
+      <!-- Сообщение когда нет чертежей -->
+      <div id="no-engine-drawings-message">
+        <div style="font-size: 64px; margin-bottom: 20px;">🔧</div>
+        <h3 style="color: #94a3b8; margin-bottom: 15px;">Чертежи и схемы двигателей отсутствуют</h3>
+        <p style="color: #64748b; margin-bottom: 25px;">
+          Для данного оборудования чертежи и схемы двигателей еще не добавлены.<br>
+          Администратор может добавить чертежи в формате PDF, сканы или фотографии.
+        </p>
+        
+        <!-- УБИРАЕМ кнопки в центре для администратора -->
+        
+        <!-- Сообщение для обычных пользователей -->
+        <div id="user-engine-drawings-message" style="display: none;">
+          <p style="color: #f59e0b;">Для доступа к чертежам и схемам двигателей обратитесь к администратору</p>
+        </div>
+      </div>
+
+      <!-- Область для отображения загруженных чертежей (изначально скрыта) -->
+      <div id="engine-drawings-display-area" style="display: none; width: 100%;">
+        <!-- Здесь будут отображаться загруженные чертежи и схемы двигателей -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Информация о двигателе -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>🔧 Информация о двигателе</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div>
+        <strong>Оборудование:</strong> <span id="current-engine-drawings-equipment">ЭКГ-5А</span><br>
+        <strong>Тип двигателя:</strong> <span>Асинхронный электродвигатель</span>
+      </div>
+      <div>
+        <strong>Статус документации:</strong> <span style="color: #ef4444;">❌ Отсутствует</span><br>
+        <strong>Последнее обновление:</strong> <span>Не обновлялось</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Список загруженных чертежей (будет заполняться динамически) -->
+  <div id="engine-drawings-list" class="card" style="margin-top: 20px; display: none;">
+    <h4>📁 Загруженные чертежи и схемы</h4>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
+      <!-- Чертежи будут добавляться сюда динамически -->
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 20: ПРОСМОТР СКАНОВ ПАСПОРТОВ ОБОРУДОВАНИЯ -->
+<div id="equipment-passports-screen" class="screen">
+  <!-- Шапка страницы -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
+    <!-- Левый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-secondary" onclick="goToMain()">🏠 Главная</button>
+      <button class="btn-secondary" onclick="goBackToEquipmentForm()">← Назад</button>
+    </div>
+    
+    <!-- Середина - Название страницы -->
+    <h2 style="margin: 0; text-align: center; color: #06b6d4;">📄 Просмотр сканов паспортов оборудования</h2>
+    
+    <!-- Правый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-success" onclick="addPassportScan()">➕ Добавить</button>
+      <button class="btn-warning" onclick="editPassportScan()">✏️ Редактировать</button>
+    </div>
+  </div>
+
+  <!-- Основное содержимое - ПУСТОЕ -->
+  <div class="card" style="min-height: 500px;">
+    <div style="text-align: center; padding: 60px 20px;">
+      <div style="font-size: 64px; margin-bottom: 20px;">📑</div>
+      <h3 style="color: #94a3b8; margin-bottom: 15px;">Страница сканов паспортов оборудования</h3>
+      <p style="color: #64748b; margin-bottom: 25px;">
+        Здесь будет отображаться сканы паспортов выбранного оборудования.<br>
+        Используйте кнопки "Добавить" или "Редактировать" для работы с паспортами.
+      </p>
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <button class="btn-secondary" onclick="uploadPassportFile()">📤 Загрузить паспорт</button>
+        <button class="btn-secondary" onclick="viewPassportOnline()">👁️ Просмотреть онлайн</button>
+        <button class="btn-secondary" onclick="downloadPassport()">📥 Скачать паспорт</button>
+      </div>
+    </div>
+
+    <!-- Место для будущего контента -->
+    <div id="passport-content" style="display: none;">
+      <!-- Здесь будет отображаться загруженные сканы паспортов -->
+    </div>
+  </div>
+
+  <!-- Информация о паспортах -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>📋 Информация о паспортах оборудования</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div>
+        <strong>Оборудование:</strong> <span id="current-passport-equipment">Не выбрано</span><br>
+        <strong>Тип паспорта:</strong> <span id="current-passport-type">Не указан</span>
+      </div>
+      <div>
+        <strong>Номер паспорта:</strong> <span id="current-passport-number">Не указан</span><br>
+        <strong>Статус:</strong> <span style="color: #ef4444;">❌ Паспорт не загружен</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 21: ПРОСМОТР КАБЕЛЬНОГО ЖУРНАЛА -->
+<div id="cable-journal-screen" class="screen">
+  <!-- Шапка страницы -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
+    <!-- Левый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-secondary" onclick="goToMain()">🏠 Главная</button>
+      <button class="btn-secondary" onclick="goBackToEquipmentForm()">← Назад</button>
+    </div>
+    
+    <!-- Середина - Название страницы -->
+    <h2 style="margin: 0; text-align: center; color: #06b6d4;">🔗 Просмотр кабельного журнала</h2>
+    
+    <!-- Правый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-success" onclick="addCableJournal()">➕ Добавить</button>
+      <button class="btn-warning" onclick="editCableJournal()">✏️ Редактировать</button>
+    </div>
+  </div>
+
+  <!-- Основное содержимое - ПУСТОЕ -->
+  <div class="card" style="min-height: 500px;">
+    <div style="text-align: center; padding: 60px 20px;">
+      <div style="font-size: 64px; margin-bottom: 20px;">📋</div>
+      <h3 style="color: #94a3b8; margin-bottom: 15px;">Страница кабельного журнала</h3>
+      <p style="color: #64748b; margin-bottom: 25px;">
+        Здесь будет отображаться кабельный журнал выбранного оборудования.<br>
+        Используйте кнопки "Добавить" или "Редактировать" для работы с журналом.
+      </p>
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <button class="btn-secondary" onclick="uploadCableJournal()">📤 Загрузить журнал</button>
+        <button class="btn-secondary" onclick="viewCableJournalOnline()">👁️ Просмотреть онлайн</button>
+        <button class="btn-secondary" onclick="downloadCableJournal()">📥 Скачать журнал</button>
+      </div>
+    </div>
+
+    <!-- Место для будущего контента -->
+    <div id="cable-journal-content" style="display: none;">
+      <!-- Здесь будет отображаться кабельный журнал -->
+    </div>
+  </div>
+
+  <!-- Информация о кабельном журнале -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>📋 Информация о кабельном журнале</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div>
+        <strong>Оборудование:</strong> <span id="current-cable-equipment">Не выбрано</span><br>
+        <strong>Тип журнала:</strong> <span id="current-journal-type">Не указан</span>
+      </div>
+      <div>
+        <strong>Версия журнала:</strong> <span id="current-journal-version">1.0</span><br>
+        <strong>Статус:</strong> <span style="color: #ef4444;">❌ Журнал не загружен</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ==================== СИСТЕМА ХРАНЕНИЯ ====================
 class CMMSStorage {
@@ -1975,6 +2400,450 @@ function handleFileUploadUniversal(files, type) {
     // Убираем сообщение "Загруженные файлы появятся здесь"
     const note = previews.querySelector('.note');
     if (note) note.remove();
+}
+
+// ==================== ФУНКЦИИ ДЛЯ РУКОВОДСТВА ПО ЭКСПЛУАТАЦИИ ====================
+
+function viewOperationManual() {
+    // Получаем информацию о выбранном оборудовании (если есть)
+    const equipmentName = document.getElementById('equipment-name-universal')?.value || 'ЭКГ-5А';
+    const equipmentCategory = document.getElementById('equipment-category')?.value || 'ЭКГ';
+    const equipmentSerial = document.getElementById('serial-number-universal')?.value || '001-2024';
+    
+    // Обновляем информацию на странице
+    document.getElementById('current-equipment-name').textContent = equipmentName;
+    document.getElementById('current-equipment-category').textContent = equipmentCategory;
+    document.getElementById('current-equipment-serial').textContent = equipmentSerial;
+    
+    // Переходим на страницу руководства
+    ScreenManager.show('operation-manual-screen');
+}
+
+function goBackToEquipmentForm() {
+    // Возвращаемся к форме добавления оборудования
+    ScreenManager.show('add-equipment-universal-screen');
+}
+
+function addManual() {
+    alert('Добавление нового руководства по эксплуатации');
+    // Здесь будет логика добавления файла руководства
+}
+
+function editManual() {
+    alert('Редактирование руководства по эксплуатации');
+    // Здесь будет логика редактирования руководства
+}
+
+function uploadManualFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.doc,.docx,.txt';
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            alert(`Файл "${file.name}" успешно загружен!`);
+            // Здесь будет логика обработки загруженного файла
+            document.querySelector('#manual-content').style.display = 'block';
+            document.querySelector('#operation-manual-screen .card > div:first-child').style.display = 'none';
+        }
+    };
+    input.click();
+}
+
+function viewManualOnline() {
+    alert('Просмотр руководства в онлайн-режиме');
+    // Здесь будет логика отображения руководства
+}
+
+function downloadManual() {
+    alert('Скачивание руководства по эксплуатации');
+    // Здесь будет логика скачивания файла
+}
+
+function viewElectricalSchemes() {
+    // Получаем информацию о выбранном оборудовании
+    const equipmentName = document.getElementById('equipment-name-universal')?.value || 'ЭКГ-5А';
+    
+    // Обновляем информацию на странице
+    document.getElementById('current-scheme-equipment-name').textContent = equipmentName;
+    
+    // Переходим на страницу электрических схем
+    ScreenManager.show('electrical-schemes-screen');
+}
+
+function addElectricalScheme() {
+    alert('Добавление новой электрической схемы');
+    // Здесь будет логика добавления схемы
+}
+
+function editElectricalScheme() {
+    alert('Редактирование электрической схемы');
+    // Здесь будет логика редактирования схемы
+}
+
+function uploadSchemeFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.dwg,.dxf,.jpg,.png';
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            alert(`Файл схемы "${file.name}" успешно загружен!`);
+            // Здесь будет логика обработки загруженной схемы
+            document.querySelector('#scheme-content').style.display = 'block';
+            document.querySelector('#electrical-schemes-screen .card > div:first-child').style.display = 'none';
+        }
+    };
+    input.click();
+}
+
+function viewSchemeOnline() {
+    alert('Просмотр электрической схемы в онлайн-режиме');
+    // Здесь будет логика отображения схемы
+}
+
+function downloadScheme() {
+    alert('Скачивание электрической схемы');
+    // Здесь будет логика скачивания файла
+}
+
+function selectScheme(schemeId) {
+    // Логика выбора схемы
+    const schemes = {
+        1: { name: 'Основная схема', type: 'Общая', version: '2.1' },
+        2: { name: 'Схема управления', type: 'Управление', version: '1.5' },
+        3: { name: 'Силовая часть', type: 'Силовая', version: '3.0' }
+    };
+    
+    const scheme = schemes[schemeId];
+    document.getElementById('current-scheme-type').textContent = scheme.type;
+    document.getElementById('current-scheme-version').textContent = scheme.version;
+    
+    alert(`Выбрана схема: ${scheme.name} (${scheme.type})`);
+}
+
+// ==================== ФУНКЦИИ ДЛЯ ФОТОГРАФИЙ ОБОРУДОВАНИЯ ====================
+
+function viewEquipmentPhotos() {
+    // Получаем информацию о выбранном оборудовании
+    const equipmentName = document.getElementById('equipment-name-universal')?.value || 'ЭКГ-5А';
+    
+    // Обновляем информацию на странице
+    document.getElementById('current-photo-equipment-name').textContent = equipmentName;
+    
+    // Переходим на страницу фотографий
+    ScreenManager.show('equipment-photos-screen');
+}
+
+function addEquipmentPhoto() {
+    alert('Добавление новой фотографии оборудования');
+    uploadMainPhoto();
+}
+
+function editEquipmentPhoto() {
+    alert('Редактирование фотографий оборудования');
+    // Здесь будет логика редактирования фотографий
+}
+
+function uploadMainPhoto() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            alert(`Основное фото "${file.name}" успешно загружено!`);
+            // Здесь будет логика обработки загруженного фото
+        }
+    };
+    input.click();
+}
+
+function uploadAdditionalPhoto() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            const fileCount = e.target.files.length;
+            alert(`Загружено ${fileCount} дополнительных фотографий!`);
+            // Здесь будет логика обработки загруженных фото
+        }
+    };
+    input.click();
+}
+
+function viewPhotoFullscreen(photoId) {
+    alert(`Просмотр фотографии #${photoId} в полноэкранном режиме`);
+    // Здесь будет логика полноэкранного просмотра
+}
+
+function organizePhotos() {
+    alert('Организация фотографий по категориям');
+    // Здесь будет логика организации фото
+}
+
+function createPhotoAlbum() {
+    alert('Создание фотоальбома оборудования');
+    // Здесь будет логика создания альбома
+}
+
+function exportPhotos() {
+    alert('Экспорт фотографий оборудования');
+    // Здесь будет логика экспорта фото
+}
+
+function printPhotos() {
+    alert('Печать фотографий оборудования');
+    // Здесь будет логика печати фото
+}
+
+function checkEngineDrawingsAdminAccess() {
+    // Проверяем, является ли пользователь администратором
+    const isAdmin = currentUser && currentUser.role === 'admin';
+    
+    // Показываем/скрываем кнопки для администратора (ТОЛЬКО ВЕРХНИЕ)
+    const adminButtonsTop = document.getElementById('admin-engine-drawings-buttons');
+    const userMessage = document.getElementById('user-engine-drawings-message');
+    
+    if (isAdmin) {
+        adminButtonsTop.style.display = 'flex';
+        userMessage.style.display = 'none';
+    } else {
+        adminButtonsTop.style.display = 'none';
+        userMessage.style.display = 'block';
+    }
+}
+
+// ==================== ФУНКЦИИ ДЛЯ ЧЕРТЕЖЕЙ И СХЕМ ДВИГАТЕЛЕЙ ====================
+
+function viewEngineDrawings() {
+    // Получаем информацию о выбранном оборудовании
+    const equipmentName = document.getElementById('equipment-name-universal')?.value || 'ЭКГ-5А';
+    
+    // Обновляем информацию на странице
+    document.getElementById('current-engine-drawings-equipment').textContent = equipmentName;
+    
+    // Проверяем права пользователя
+    checkEngineDrawingsAdminAccess();
+    
+    // Переходим на страницу чертежей и схем двигателей
+    ScreenManager.show('engine-drawings-schemes-screen');
+}
+
+function checkEngineDrawingsAdminAccess() {
+    // Проверяем, является ли пользователь администратором
+    const isAdmin = currentUser && currentUser.role === 'admin';
+    
+    // Показываем/скрываем кнопки для администратора (ТОЛЬКО ВЕРХНИЕ)
+    const adminButtonsTop = document.getElementById('admin-engine-drawings-buttons');
+    const userMessage = document.getElementById('user-engine-drawings-message');
+    
+    if (isAdmin) {
+        adminButtonsTop.style.display = 'flex';
+        userMessage.style.display = 'none';
+    } else {
+        adminButtonsTop.style.display = 'none';
+        userMessage.style.display = 'block';
+    }
+}
+
+function addEngineDrawingPDF() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf';
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            handleEngineDrawingUpload(file, 'pdf');
+        }
+    };
+    input.click();
+}
+
+function addEngineDrawingScan() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*,.pdf';
+    input.multiple = true;
+    input.onchange = function(e) {
+        Array.from(e.target.files).forEach(file => {
+            handleEngineDrawingUpload(file, 'scan');
+        });
+    };
+    input.click();
+}
+
+function addEngineDrawingPhoto() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = function(e) {
+        Array.from(e.target.files).forEach(file => {
+            handleEngineDrawingUpload(file, 'photo');
+        });
+    };
+    input.click();
+}
+
+function handleEngineDrawingUpload(file, type) {
+    const fileTypes = {
+        'pdf': '📄 PDF чертеж',
+        'scan': '📋 Скан схемы', 
+        'photo': '📷 Фото схемы'
+    };
+    
+    alert(`Файл "${file.name}" успешно загружен как ${fileTypes[type]}!`);
+    
+    // Скрываем сообщение об отсутствии чертежей
+    document.getElementById('no-engine-drawings-message').style.display = 'none';
+    
+    // Показываем контент
+    document.getElementById('engine-drawings-display-area').style.display = 'block';
+    document.getElementById('engine-drawings-list').style.display = 'block';
+    
+    // Обновляем статус
+    const statusElement = document.querySelector('#current-engine-drawings-equipment').parentNode.nextElementSibling.querySelector('span');
+    statusElement.textContent = '✅ Загружены';
+    statusElement.style.color = '#10b981';
+    
+    // Добавляем файл в список
+    addToEngineDrawingsList(file, type);
+}
+
+function addToEngineDrawingsList(file, type) {
+    const drawingsList = document.getElementById('engine-drawings-list');
+    const grid = drawingsList.querySelector('div');
+    
+    const fileDiv = document.createElement('div');
+    fileDiv.className = 'equipment-item';
+    fileDiv.style.textAlign = 'center';
+    fileDiv.style.cursor = 'pointer';
+    fileDiv.onclick = () => viewEngineDrawingFile(file.name, type);
+    
+    const icons = {
+        'pdf': '📄',
+        'scan': '📋',
+        'photo': '📷'
+    };
+    
+    fileDiv.innerHTML = `
+        <div style="font-size: 32px; margin-bottom: 10px;">${icons[type]}</div>
+        <strong>${file.name}</strong>
+        <div style="font-size: 12px; color: #94a3b8;">${type === 'pdf' ? 'PDF чертеж' : type === 'scan' ? 'Скан схемы' : 'Фото схемы'}</div>
+        <div style="font-size: 12px; color: #10b981;">● Загружено</div>
+        <div style="font-size: 11px; color: #64748b; margin-top: 5px;">${new Date().toLocaleDateString()}</div>
+    `;
+    
+    grid.appendChild(fileDiv);
+}
+
+function viewEngineDrawingFile(filename, type) {
+    alert(`Просмотр файла: ${filename} (${type})`);
+    // Здесь будет логика просмотра файла
+}
+
+// ==================== ФУНКЦИИ ДЛЯ СКАНОВ ПАСПОРТОВ ОБОРУДОВАНИЯ ====================
+
+function viewEquipmentPassports() {
+    // Получаем информацию о выбранном оборудовании
+    const equipmentName = document.getElementById('equipment-name-universal')?.value || 'ЭКГ-5А';
+    const equipmentSerial = document.getElementById('serial-number-universal')?.value || '001-2024';
+    
+    // Обновляем информацию на странице
+    document.getElementById('current-passport-equipment').textContent = equipmentName;
+    document.getElementById('current-passport-number').textContent = equipmentSerial;
+    
+    // Переходим на страницу сканов паспортов
+    ScreenManager.show('equipment-passports-screen');
+}
+
+function addPassportScan() {
+    alert('Добавление нового скана паспорта оборудования');
+    uploadPassportFile();
+}
+
+function editPassportScan() {
+    alert('Редактирование сканов паспортов оборудования');
+    // Здесь будет логика редактирования паспортов
+}
+
+function uploadPassportFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.jpg,.jpeg,.png,.tiff';
+    input.multiple = true;
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            alert(`Паспорт "${file.name}" успешно загружен!`);
+            // Здесь будет логика обработки загруженного паспорта
+            document.querySelector('#passport-content').style.display = 'block';
+            document.querySelector('#equipment-passports-screen .card > div:first-child').style.display = 'none';
+        }
+    };
+    input.click();
+}
+
+function viewPassportOnline() {
+    alert('Просмотр паспорта в онлайн-режиме');
+    // Здесь будет логика отображения паспорта
+}
+
+function downloadPassport() {
+    alert('Скачивание паспорта оборудования');
+    // Здесь будет логика скачивания файла
+}
+
+// ==================== ФУНКЦИИ ДЛЯ КАБЕЛЬНОГО ЖУРНАЛА ====================
+
+function viewCableJournal() {
+    // Получаем информацию о выбранном оборудовании
+    const equipmentName = document.getElementById('equipment-name-universal')?.value || 'ЭКГ-5А';
+    
+    // Обновляем информацию на странице
+    document.getElementById('current-cable-equipment').textContent = equipmentName;
+    
+    // Переходим на страницу кабельного журнала
+    ScreenManager.show('cable-journal-screen');
+}
+
+function addCableJournal() {
+    alert('Добавление нового кабельного журнала');
+    uploadCableJournal();
+}
+
+function editCableJournal() {
+    alert('Редактирование кабельного журнала');
+    // Здесь будет логика редактирования журнала
+}
+
+function uploadCableJournal() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.xlsx,.xls,.doc,.docx';
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            alert(`Кабельный журнал "${file.name}" успешно загружен!`);
+            // Здесь будет логика обработки загруженного журнала
+            document.querySelector('#cable-journal-content').style.display = 'block';
+            document.querySelector('#cable-journal-screen .card > div:first-child').style.display = 'none';
+        }
+    };
+    input.click();
+}
+
+function viewCableJournalOnline() {
+    alert('Просмотр кабельного журнала в онлайн-режиме');
+    // Здесь будет логика отображения журнала
+}
+
+function downloadCableJournal() {
+    alert('Скачивание кабельного журнала');
+    // Здесь будет логика скачивания файла
 }
 
 // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
