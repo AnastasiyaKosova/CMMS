@@ -9,7 +9,7 @@
   .screen {display:none; padding:20px; border-radius:12px; background: #0b1220; width:95%; max-width:1200px; box-shadow:0 6px 18px rgba(2,6,23,0.6);}
   .active {display:block;}
   
-  /* Новые стили для заголовка предприятия */
+  /* Стили для заголовка предприятия */
   .company-header {
     text-align: center;
     margin-bottom: 30px;
@@ -163,11 +163,32 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(6,182,212,0.3);
 }
+
+/* Стили для вкладок ремонтов */
+.repair-tab {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  background: rgba(255,255,255,0.05);
+  color: #e6eef6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.repair-tab:hover {
+  background: rgba(6,182,212,0.2);
+}
+
+.repair-tab.active {
+  background: #06b6d4;
+  color: #052026;
+}
 </style>
 </head>
 <body>
 
-<!-- Экран 1: Вход -->
+<!-- ЭКРАН 1: ВХОД -->
 <div id="login-screen" class="screen active">
   <!-- Добавлен заголовок предприятия -->
   <div class="company-header">
@@ -187,7 +208,7 @@
   </div>
 </div>
 
-<!-- Экран 2: Админ Дашборд -->
+<!-- ЭКРАН 2: АДМИН ДАШБОРД -->
 <div id="admin-dashboard-screen" class="screen admin-panel">
   <h2>👑 Панель администратора</h2>
   
@@ -215,7 +236,7 @@
   <button class="btn-secondary" id="logout-admin">🚪 Выйти</button>
 </div>
 
-<!-- Экран 3: Настройка материалов -->
+<!-- ЭКРАН 3: НАСТРОЙКИ МАТЕРИАЛОВ -->
 <div id="admin-setup-screen" class="screen admin-panel">
   <h2>⚙️ Настройка обучающих материалов</h2>
   
@@ -236,7 +257,7 @@
   <button class="btn-secondary" id="back-to-admin-dashboard">← Назад в панель администратора</button>
 </div>
 
-<!-- Экран 4: Просмотр результатов -->
+<!-- ЭКРАН 4: ПРОСМОТР РЕЗУЛЬТАТОВ -->
 <div id="results-screen" class="screen admin-panel">
   <h2>📊 Результаты тестирования сотрудников</h2>
   <table class="results-table" id="results-table">
@@ -254,7 +275,7 @@
   <button class="btn-secondary" id="back-to-admin-from-results">← Назад в панель администратора</button>
 </div>
 
-<!-- Экран 5: Изучение материалов для сотрудника -->
+<!-- ЭКРАН 5: ИЗУЧЕНИЕ МАТЕРИАЛОВ ДЛЯ СОТРУДНИКОВ -->
 <div id="study-screen" class="screen">
   <h2>📖 Обучающие материалы</h2>
   <div id="study-content" class="card">
@@ -264,7 +285,7 @@
   <button class="btn-secondary" id="logout-study">🚪 Выйти</button>
 </div>
 
-<!-- Экран 6: Тестирование для сотрудника -->
+<!-- ЭКРАН 6: ТЕСТИРОВАНИЕ СОТРУДНИКА -->
 <div id="test-screen" class="screen">
   <h2>🧠 Тестирование знаний</h2>
   <div id="test-progress">Вопрос 1 из 10</div>
@@ -276,7 +297,7 @@
   <div id="test-msg" class="note"></div>
 </div>
 
-<!-- Экран 7: РАБОЧЕЕ ОКНО CMMS -->
+<!-- ЭКРАН 7: РАБОЧЕЕ ОКНО CMMS -->
 <div id="workspace-screen" class="screen">
   <!-- Верхняя панель с кнопками -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
@@ -318,15 +339,6 @@
           </button>
           <button class="equipment-btn" style="width: 100%; text-align: left;" onclick="viewShipments()">
             🚛 Учет отгруженной массы
-          </button>
-          <button class="equipment-btn" style="width: 100%; text-align: left;" onclick="viewAggregateJournalWorkspace()">
-            📋 Агрегатный журнал
-          </button>
-          <button class="equipment-btn" style="width: 100%; text-align: left;" onclick="viewOperationManualWorkspace()">
-            📖 Руководства по эксплуатации
-          </button>
-          <button class="equipment-btn" style="width: 100%; text-align: left;" onclick="viewElectricalSchemesWorkspace()">
-            🔌 Электрические схемы
           </button>
         </div>
       </div>
@@ -403,9 +415,6 @@
           <button class="btn-success" onclick="goToMain()" style="width: 100%; text-align: center;">
             🏭 Перейти к оборудованию
           </button>
-          <button class="btn-warning" onclick="viewAggregateJournalWorkspace()" style="width: 100%; text-align: center;">
-            📋 Агрегатный журнал
-          </button>
           <button class="btn-secondary" onclick="generateQuickReport()" style="width: 100%; text-align: center;">
             📄 Быстрый отчет
           </button>
@@ -417,177 +426,7 @@
 
 
 
-
-
-<!-- ЭКРАН 13: ФОРМА ДОБАВЛЕНИЯ ОБОРУДОВАНИЯ -->
-<div id="add-equipment-screen" class="screen">
-  <div class="category-header">
-    <h2>➕ Добавление новой техники ЭКГ</h2>
-    <button class="btn-secondary" onclick="ScreenManager.show('ekg-screen')">← Назад к списку экскаваторов</button>
-  </div>
-
-  <div style="display: flex; gap: 20px;">
-    <!-- ЛЕВАЯ ПАНЕЛЬ - Медиафайлы -->
-    <div style="flex: 0 0 250px;">
-      <div class="card">
-        <h4>📁 Медиафайлы</h4>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-          <button class="equipment-btn" style="width: 100%; text-align: left;" onclick="addPhoto()">
-            📷 Добавить фото
-          </button>
-          <button class="equipment-btn" style="width: 100%; text-align: left;" onclick="addElectricalSchemes()">
-            📄 Электрические схемы (PDF)
-          </button>
-          <button class="equipment-btn" style="width: 100%; text-align: left;" onclick="addCabinetPhotos()">
-            🖼️ Фото шкафов и оборудования
-          </button>
-        </div>
-        
-        <!-- Превью загруженных файлов -->
-        <div id="file-previews" style="margin-top: 15px;">
-          <div class="note">Загруженные файлы появятся здесь</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ОСНОВНОЙ БЛОК - Форма ввода данных -->
-    <div style="flex: 1;">
-      <div class="card">
-        <h3>📋 Основные параметры экскаватора</h3>
-        
-        <div style="display: flex; gap: 20px;">
-          <!-- ПЕРВЫЙ СТОЛБЕЦ -->
-          <div style="flex: 1;">
-            <!-- Полное наименование техники -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">🏷️ Полное наименование техники</label>
-              <input type="text" id="equipment-name" placeholder="Например: ЭКГ-5А" style="width: 100%;">
-            </div>
-
-            <!-- Выбор лопаты -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">⛏️ Выбор лопаты</label>
-              <select id="shovel-type" style="width: 100%;">
-                <option value="">Выберите тип лопаты</option>
-                <option value="прямая">Прямая лопата</option>
-                <option value="обратная">Обратная лопата</option>
-              </select>
-            </div>
-
-            <!-- Тип привода -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">🔧 Выбор привода</label>
-              <select id="drive-type" style="width: 100%;">
-                <option value="">Выберите тип привода</option>
-                <option value="реечный">Реечный</option>
-                <option value="канатный">Канатный</option>
-              </select>
-            </div>
-
-            <!-- Потребляемая мощность -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">⚡ Потребляемая мощность (Вт)</label>
-              <input type="number" id="power-consumption" placeholder="Например: 1500000" style="width: 100%;">
-            </div>
-
-            <!-- Мощность двигателя подъема -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">🔼 Подъем мощность двигателя (кВт)</label>
-              <input type="number" id="lift-power" placeholder="Например: 250" style="width: 100%;">
-            </div>
-
-            <!-- Мощность двигателя напора -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">📏 Напор мощность двигателя (кВт)</label>
-              <input type="number" id="pressure-power" placeholder="Например: 200" style="width: 100%;">
-            </div>
-
-            <!-- Ремонт ЕТО -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">🔧 Добавить ремонт ЕТО</label>
-              <textarea id="eto-repair" placeholder="Описание ремонта ЕТО..." rows="3" style="width: 100%;"></textarea>
-            </div>
-          </div>
-
-          <!-- ВТОРОЙ СТОЛБЕЦ -->
-          <div style="flex: 1;">
-            <!-- Порядковый номер -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">🔢 Порядковый номер</label>
-              <input type="text" id="serial-number" placeholder="Например: 001-2024" style="width: 100%;">
-            </div>
-
-            <!-- Вместимость ковша -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">🪣 Вместимость ковша (м³)</label>
-              <input type="number" step="0.1" id="bucket-capacity" placeholder="Например: 5.0" style="width: 100%;">
-            </div>
-
-            <!-- Дата ввода в эксплуатацию -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">📅 Дата ввода в эксплуатацию</label>
-              <input type="date" id="commissioning-date" style="width: 100%;">
-            </div>
-
-            <!-- Мощность ТСН -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">💧 Мощность ТСН (кВт)</label>
-              <input type="number" id="tsn-power" placeholder="Например: 15" style="width: 100%;">
-            </div>
-
-            <!-- Мощность двигателя поворота -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">🔄 Поворот мощность двигателя (кВт)</label>
-              <input type="number" id="rotation-power" placeholder="Например: 180" style="width: 100%;">
-            </div>
-
-            <!-- Мощность двигателя хода -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">🚶 Ход мощность двигателя (кВт)</label>
-              <input type="number" id="travel-power" placeholder="Например: 220" style="width: 100%;">
-            </div>
-
-            <!-- Ремонт ТР1 -->
-            <div style="margin-bottom: 15px;">
-              <label style="display: block; margin-bottom: 5px; font-weight: bold;">🔧 Добавить ремонт ТР1</label>
-              <textarea id="tr1-repair" placeholder="Описание ремонта ТР1..." rows="3" style="width: 100%;"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Кнопки сохранения -->
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-          <button class="btn-success" onclick="saveEquipment()">💾 Сохранить технику</button>
-          <button class="btn-secondary" onclick="clearForm()">🗑️ Очистить форму</button>
-          <button class="btn-warning" onclick="saveAsDraft()">📝 Сохранить черновик</button>
-        </div>
-      </div>
-
-      <!-- Предпросмотр оборудования -->
-      <div class="card" style="margin-top: 20px;">
-        <h3>👁️ Предпросмотр техники</h3>
-        <div id="equipment-preview">
-          <div class="note">Заполните форму для просмотра предпросмотра</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Добавляем модальное окно для редактирования названия предприятия -->
-<div id="company-name-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
-  <div style="background: #1e293b; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; border: 2px solid #06b6d4;">
-    <h3>✏️ Изменить название предприятия</h3>
-    <input type="text" id="company-name-input" style="width: 100%; padding: 12px; margin: 15px 0; border-radius: 8px; border: 1px solid #06b6d4; background: rgba(255,255,255,0.05); color: white; font-size: 16px;" 
-           placeholder="Введите новое название предприятия">
-    <div style="display: flex; gap: 10px; justify-content: flex-end;">
-      <button class="btn-secondary" onclick="hideCompanyNameEditor()">Отмена</button>
-      <button class="btn-success" onclick="saveCompanyName()">💾 Сохранить</button>
-    </div>
-  </div>
-</div>
-
-<!-- Экран 14: ОБОРУДОВАНИЕ (Главная) - ИЗМЕНЕННАЯ ВЕРСИЯ -->
+<!-- ЭКРАН 8: ОБОРУДОВАНИЕ (Главная) - ИЗМЕНЕННАЯ ВЕРСИЯ -->
 <div id="equipment-main-screen" class="screen">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
     <h2 style="margin: 0;">🏭 Оборудование предприятия</h2>
@@ -775,7 +614,7 @@
   </div>
 </div>
 
-<!-- ЭКРАН 15: УНИВЕРСАЛЬНАЯ ФОРМА ДОБАВЛЕНИЯ ОБОРУДОВАНИЯ -->
+<!-- ЭКРАН 9: УНИВЕРСАЛЬНАЯ ФОРМА ДОБАВЛЕНИЯ ОБОРУДОВАНИЯ -->
 <div id="add-equipment-universal-screen" class="screen">
   <div class="category-header">
     <h2 id="universal-form-title">➕ Добавление нового оборудования</h2>
@@ -981,7 +820,7 @@
   </div>
 </div>
 
-<!-- ЭКРАН 16: РУКОВОДСТВО ПО ЭКСПЛУАТАЦИИ -->
+<!-- ЭКРАН 10: РУКОВОДСТВО ПО ЭКСПЛУАТАЦИИ -->
 <div id="operation-manual-screen" class="screen">
   <!-- Шапка страницы -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
@@ -1039,7 +878,7 @@
   </div>
 </div>
 
-<!-- ЭКРАН 17: ПРОСМОТР ЭЛЕКТРИЧЕСКОЙ СХЕМЫ -->
+<!-- ЭКРАН 11: ПРОСМОТР ЭЛЕКТРИЧЕСКОЙ СХЕМЫ -->
 <div id="electrical-schemes-screen" class="screen">
   <!-- Шапка страницы -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
@@ -1119,7 +958,7 @@
   </div>
 </div>
 
-<!-- ЭКРАН 18: ПРОСМОТР ФОТОГРАФИЙ ОБОРУДОВАНИЯ -->
+<!-- ЭКРАН 12: ПРОСМОТР ФОТОГРАФИЙ ОБОРУДОВАНИЯ -->
 <div id="equipment-photos-screen" class="screen">
   <!-- Шапка страницы -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
@@ -1217,7 +1056,7 @@
   </div>
 </div>
 
-<!-- ЭКРАН 19: ЧЕРТЕЖИ И СХЕМЫ ДВИГАТЕЛЕЙ -->
+<!-- ЭКРАН 13: ЧЕРТЕЖИ И СХЕМЫ ДВИГАТЕЛЕЙ -->
 <div id="engine-drawings-schemes-screen" class="screen">
   <!-- Шапка страницы -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
@@ -1290,7 +1129,7 @@
   </div>
 </div>
 
-<!-- ЭКРАН 20: ПРОСМОТР СКАНОВ ПАСПОРТОВ ОБОРУДОВАНИЯ -->
+<!-- ЭКРАН 14: ПРОСМОТР СКАНОВ ПАСПОРТОВ ОБОРУДОВАНИЯ -->
 <div id="equipment-passports-screen" class="screen">
   <!-- Шапка страницы -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
@@ -1348,7 +1187,7 @@
   </div>
 </div>
 
-<!-- ЭКРАН 21: ПРОСМОТР КАБЕЛЬНОГО ЖУРНАЛА -->
+<!-- ЭКРАН 15: ПРОСМОТР КАБЕЛЬНОГО ЖУРНАЛА -->
 <div id="cable-journal-screen" class="screen">
   <!-- Шапка страницы -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
@@ -1406,7 +1245,7 @@
   </div>
 </div>
 
-<!-- ЭКРАН 22: АГРЕГАТНЫЙ ЖУРНАЛ -->
+<!-- ЭКРАН 16: АГРЕГАТНЫЙ ЖУРНАЛ -->
 <div id="aggregate-journal-screen" class="screen">
   <!-- Шапка страницы -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
@@ -1590,8 +1429,438 @@
   </div>
 </div>
 
+<!-- ЭКРАН 19: УЗЛЫ И КОМПОНЕНТЫ ОБОРУДОВАНИЯ -->
+<div id="components-screen" class="screen">
+  <!-- Шапка страницы -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
+    <!-- Левый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-secondary" onclick="goToMain()">🏠 Главная</button>
+      <button class="btn-secondary" onclick="goBackToEquipmentForm()">← Назад</button>
+    </div>
+    
+    <!-- Середина - Название страницы -->
+    <h2 style="margin: 0; text-align: center; color: #06b6d4;">🔩 Узлы и компоненты</h2>
+    
+    <!-- Правый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-success" onclick="addComponent()">➕ Добавить</button>
+      <button class="btn-warning" onclick="editComponent()">✏️ Редактировать</button>
+    </div>
+  </div>
+
+  <!-- Информация об оборудовании -->
+  <div class="card" style="margin-bottom: 20px;">
+    <h3>📋 Информация об оборудовании</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+      <div>
+        <strong>Оборудование:</strong> <span id="components-equipment-name">Двигатель привода напора</span><br>
+        <strong>Дата изготовления:</strong> <span id="components-manufacture-date">09.12.2023</span>
+      </div>
+      <div>
+        <strong>Заводской номер:</strong> <span id="components-serial-number">№57498</span><br>
+        <strong>Статус:</strong> <span style="color: #10b981;">● В работе</span>
+      </div>
+      <div>
+        <strong>Категория:</strong> <span>ЭКГ-12А</span><br>
+        <strong>Последнее обновление:</strong> <span>16.10.2025</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Таблица узлов и компонентов -->
+  <div class="card">
+    <h3>🔩 Список узлов и компонентов</h3>
+    
+    <!-- Панель поиска и фильтров -->
+    <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+      <div style="flex: 2; min-width: 300px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold;">🔍 Поиск по наименованию</label>
+        <input type="text" id="component-search" placeholder="Введите название узла или компонента..." style="width: 100%;">
+      </div>
+      <div style="flex: 1; min-width: 200px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold;">📅 Фильтр по сроку службы</label>
+        <select id="lifespan-filter" style="width: 100%;">
+          <option value="">Все сроки</option>
+          <option value="expired">Истекшие</option>
+          <option value="soon">Скоро истекают</option>
+          <option value="normal">Нормальные</option>
+        </select>
+      </div>
+      <div style="display: flex; align-items: flex-end;">
+        <button class="btn-secondary" onclick="applyComponentFilters()">🔍 Применить фильтры</button>
+        <button class="btn-secondary" onclick="clearComponentFilters()" style="margin-left: 10px;">🗑️ Очистить</button>
+      </div>
+    </div>
+
+    <!-- Таблица узлов и компонентов -->
+    <div style="overflow-x: auto;">
+      <table class="results-table" style="width: 100%;">
+        <thead>
+          <tr>
+            <th style="width: 200px;">Наименование</th>
+            <th>Описание</th>
+            <th style="width: 150px;">Срок службы</th>
+            <th style="width: 120px;">Статус</th>
+            <th style="width: 100px;">Действия</th>
+          </tr>
+        </thead>
+        <tbody id="components-table-body">
+          <!-- Компонент 1 -->
+          <tr>
+            <td><strong>Щетки электро</strong></td>
+            <td>
+              <strong>ТИП ЭЩ-20-30-40 производитель завод Калуга. 16шт.</strong><br>
+              <small>Щетки графитовые для электродвигателя</small>
+            </td>
+            <td>
+              <strong>14 мес.</strong><br>
+              <small style="color: #f59e0b;">До: 16.12.2024</small>
+            </td>
+            <td>
+              <span style="color: #10b981; font-weight: bold;">✅ Активен</span>
+            </td>
+            <td>
+              <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editComponentItem(1)">✏️</button>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteComponent(1)">🗑️</button>
+            </td>
+          </tr>
+          <!-- Компонент 2 -->
+          <tr>
+            <td><strong>Подшипники</strong></td>
+            <td>
+              <strong>Подшипник радиально упорный марка ПШ-8757</strong><br>
+              <small>Подшипник для ротора двигателя</small>
+            </td>
+            <td>
+              <strong>2 года</strong><br>
+              <small style="color: #10b981;">До: 16.10.2025</small>
+            </td>
+            <td>
+              <span style="color: #10b981; font-weight: bold;">✅ Активен</span>
+            </td>
+            <td>
+              <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editComponentItem(2)">✏️</button>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteComponent(2)">🗑️</button>
+            </td>
+          </tr>
+          <!-- Компонент 3 -->
+          <tr>
+            <td><strong>Ротор двигателя</strong></td>
+            <td>
+              <strong>Ротор асинхронного двигателя 200кВт</strong><br>
+              <small>Основной вращающийся узел</small>
+            </td>
+            <td>
+              <strong>5 лет</strong><br>
+              <small style="color: #10b981;">До: 16.10.2028</small>
+            </td>
+            <td>
+              <span style="color: #10b981; font-weight: bold;">✅ Активен</span>
+            </td>
+            <td>
+              <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editComponentItem(3)">✏️</button>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteComponent(3)">🗑️</button>
+            </td>
+          </tr>
+          <!-- Компонент 4 -->
+          <tr>
+            <td><strong>Статор двигателя</strong></td>
+            <td>
+              <strong>Статорная обмотка 200кВт</strong><br>
+              <small>Неподвижная часть электродвигателя</small>
+            </td>
+            <td>
+              <strong>7 лет</strong><br>
+              <small style="color: #ef4444;">До: 16.10.2023 (истек)</small>
+            </td>
+            <td>
+              <span style="color: #ef4444; font-weight: bold;">❌ Истек</span>
+            </td>
+            <td>
+              <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editComponentItem(4)">✏️</button>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteComponent(4)">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Пагинация -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+      <div class="note">
+        Показано 4 компонента из 12
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-secondary" disabled>⬅️ Назад</button>
+        <span style="padding: 8px 12px; background: rgba(6,182,212,0.1); border-radius: 6px;">1</span>
+        <button class="btn-secondary">2</button>
+        <button class="btn-secondary">3</button>
+        <button class="btn-secondary">Далее ➡️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Блок для добавления фотографий -->
+  <div class="card" style="margin-top: 20px;">
+    <h3>📷 Фотографии узлов и компонентов</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
+      
+      <!-- Пример фотографии -->
+      <div class="equipment-item" style="text-align: center; cursor: pointer;" onclick="viewComponentPhoto(1)">
+        <div style="font-size: 32px; margin-bottom: 10px;">🖼️</div>
+        <strong>Общий вид</strong>
+        <div style="font-size: 12px; color: #94a3b8;">12.12.2024</div>
+      </div>
+      
+      <div class="equipment-item" style="text-align: center; cursor: pointer;" onclick="viewComponentPhoto(2)">
+        <div style="font-size: 32px; margin-bottom: 10px;">🔧</div>
+        <strong>Щетки</strong>
+        <div style="font-size: 12px; color: #94a3b8;">10.12.2024</div>
+      </div>
+      
+      <div class="equipment-item" style="text-align: center; cursor: pointer;" onclick="viewComponentPhoto(3)">
+        <div style="font-size: 32px; margin-bottom: 10px;">⚙️</div>
+        <strong>Подшипники</strong>
+        <div style="font-size: 12px; color: #94a3b8;">08.12.2024</div>
+      </div>
+      
+      <!-- Кнопка добавления новой фотографии -->
+      <div class="equipment-item" style="text-align: center; cursor: pointer; border: 2px dashed #06b6d4; background: rgba(6,182,212,0.05);" onclick="addComponentPhoto()">
+        <div style="font-size: 32px; margin-bottom: 10px;">➕</div>
+        <strong>Добавить фото</strong>
+        <div style="font-size: 12px; color: #94a3b8;">Максимум 5 фото</div>
+      </div>
+    </div>
+    
+    <div class="note" style="margin-top: 15px;">
+      ⚠️ Возможность добавить до 5 фото узла или деталей
+    </div>
+  </div>
+
+  <!-- Действия с компонентами -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>⚙️ Действия с компонентами</h4>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button class="btn-secondary" onclick="exportComponentsList()">📄 Экспорт списка</button>
+      <button class="btn-secondary" onclick="generateComponentsReport()">📊 Сформировать отчет</button>
+      <button class="btn-secondary" onclick="checkComponentsLifespan()">⏰ Проверить сроки</button>
+      <button class="btn-warning" onclick="importComponentsData()">📤 Импорт данных</button>
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 20: ГРАФИК РЕМОНТОВ -->
+<div id="repair-schedule-screen" class="screen">
+  <!-- Шапка страницы -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(6,182,212,0.3);">
+    <!-- Левый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-secondary" onclick="goToMain()">🏠 Главная</button>
+      <button class="btn-secondary" onclick="goBackToEquipmentForm()">← Назад</button>
+    </div>
+    
+    <!-- Середина - Название страницы -->
+    <h2 style="margin: 0; text-align: center; color: #06b6d4;">📅 График ремонтов</h2>
+    
+    <!-- Правый верхний угол -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-success" onclick="addRepair()">➕ Добавить</button>
+      <button class="btn-warning" onclick="editRepair()">✏️ Редактировать</button>
+    </div>
+  </div>
+
+  <!-- Информация об оборудовании -->
+  <div class="card" style="margin-bottom: 20px;">
+    <h3>📋 Информация об оборудовании</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+      <div>
+        <strong>Оборудование:</strong> <span id="repair-equipment-name">ЭКГ-12А</span><br>
+        <strong>Заводской номер:</strong> <span id="repair-serial-number">№57498</span>
+      </div>
+      <div>
+        <strong>Дата изготовления:</strong> <span>09.12.2023</span><br>
+        <strong>Статус:</strong> <span style="color: #10b981;">● В работе</span>
+      </div>
+      <div>
+        <strong>Наработка:</strong> <span>1,245 часов</span><br>
+        <strong>Следующий ремонт:</strong> <span style="color: #f59e0b;">ЕТО через 15 дней</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Таблица графиков ремонтов -->
+  <div class="card">
+    <h3>🛠️ График ремонтов и технического обслуживания</h3>
+    
+    <!-- Вкладки типов ремонтов -->
+    <div style="display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid rgba(6,182,212,0.3);">
+      <button class="repair-tab active" onclick="switchRepairTab('eto')">ЕТО</button>
+      <button class="repair-tab" onclick="switchRepairTab('to1')">ТО1</button>
+      <button class="repair-tab" onclick="switchRepairTab('kr')">КР</button>
+      <button class="repair-tab" onclick="switchRepairTab('add')" style="margin-left: auto; background: #10b981;">➕ Добавить ремонт</button>
+    </div>
+
+    <!-- Таблица ремонтов -->
+    <div style="overflow-x: auto;">
+      <table class="results-table" style="width: 100%;">
+        <thead>
+          <tr>
+            <th style="width: 150px;">Периодичность</th>
+            <th>Описание работ по ремонту</th>
+            <th style="width: 120px;">Человек/час</th>
+            <th style="width: 100px;">Статус</th>
+            <th style="width: 100px;">Действия</th>
+          </tr>
+        </thead>
+        <tbody id="repair-table-body">
+          <!-- Ремонт 1 -->
+          <tr>
+            <td>
+              <strong>1 раз в мес</strong><br>
+              <small style="color: #06b6d4;">Следующий: 01.11.2025</small>
+            </td>
+            <td>
+              <strong>Осмотр щеточного аппарата</strong><br>
+              <small>Проверка износа щеток, замена при необходимости</small>
+            </td>
+            <td>
+              <strong>4</strong><br>
+              <small>часа</small>
+            </td>
+            <td>
+              <span style="color: #10b981; font-weight: bold;">✅ Активен</span>
+            </td>
+            <td>
+              <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editRepairItem(1)">✏️</button>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteRepair(1)">🗑️</button>
+            </td>
+          </tr>
+          <!-- Ремонт 2 -->
+          <tr>
+            <td>
+              <strong>1 раз в мес</strong><br>
+              <small style="color: #06b6d4;">Следующий: 01.11.2025</small>
+            </td>
+            <td>
+              <strong>Проверка работоспособности РУП 220В</strong><br>
+              <small>Диагностика релейной защиты и управления</small>
+            </td>
+            <td>
+              <strong>2</strong><br>
+              <small>часа</small>
+            </td>
+            <td>
+              <span style="color: #10b981; font-weight: bold;">✅ Активен</span>
+            </td>
+            <td>
+              <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editRepairItem(2)">✏️</button>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteRepair(2)">🗑️</button>
+            </td>
+          </tr>
+          <!-- Ремонт 3 -->
+          <tr>
+            <td>
+              <strong>1 раз в 3 мес</strong><br>
+              <small style="color: #f59e0b;">Следующий: 15.11.2025</small>
+            </td>
+            <td>
+              <strong>Замена масла в редукторе</strong><br>
+              <small>Полная замена масла, промывка системы</small>
+            </td>
+            <td>
+              <strong>8</strong><br>
+              <small>часов</small>
+            </td>
+            <td>
+              <span style="color: #10b981; font-weight: bold;">✅ Активен</span>
+            </td>
+            <td>
+              <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editRepairItem(3)">✏️</button>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteRepair(3)">🗑️</button>
+            </td>
+          </tr>
+          <!-- Ремонт 4 -->
+          <tr>
+            <td>
+              <strong>1 раз в 6 мес</strong><br>
+              <small style="color: #f59e0b;">Следующий: 01.12.2025</small>
+            </td>
+            <td>
+              <strong>Проверка и регулировка тормозов</strong><br>
+              <small>Полная диагностика тормозной системы</small>
+            </td>
+            <td>
+              <strong>6</strong><br>
+              <small>часов</small>
+            </td>
+            <td>
+              <span style="color: #10b981; font-weight: bold;">✅ Активен</span>
+            </td>
+            <td>
+              <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editRepairItem(4)">✏️</button>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteRepair(4)">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Пагинация -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+      <div class="note">
+        Показано 4 ремонта из 15
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-secondary" disabled>⬅️ Назад</button>
+        <span style="padding: 8px 12px; background: rgba(6,182,212,0.1); border-radius: 6px;">1</span>
+        <button class="btn-secondary">2</button>
+        <button class="btn-secondary">3</button>
+        <button class="btn-secondary">Далее ➡️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Блок графиков и визуализации -->
+  <div class="card" style="margin-top: 20px;">
+    <h3>📊 Визуализация графиков ремонтов</h3>
+    
+    <!-- Переключение между типами графиков -->
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <button class="btn-secondary active" onclick="switchChartType('gantt')">📅 Диаграмма Ганта</button>
+      <button class="btn-secondary" onclick="switchChartType('calendar')">🗓️ Календарный план</button>
+      <button class="btn-secondary" onclick="switchChartType('stats')">📈 Статистика</button>
+    </div>
+
+    <!-- Область для графиков -->
+    <div id="chart-area" style="min-height: 300px; background: rgba(255,255,255,0.02); border-radius: 8px; padding: 20px; text-align: center;">
+      <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+      <h4 style="color: #94a3b8; margin-bottom: 15px;">Диаграмма Ганта ремонтов</h4>
+      <p style="color: #64748b; margin-bottom: 25px;">
+        Здесь будет отображаться график ремонтов в виде диаграммы Ганта<br>
+        с возможностью просмотра расписания и планирования работ.
+      </p>
+      <button class="btn-success" onclick="generateRepairChart()">🔄 Сгенерировать график</button>
+    </div>
+  </div>
+
+  <!-- Действия с графиками ремонтов -->
+  <div class="card" style="margin-top: 20px;">
+    <h4>⚙️ Действия с графиками ремонтов</h4>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button class="btn-secondary" onclick="exportRepairSchedule()">📄 Экспорт графика</button>
+      <button class="btn-secondary" onclick="printRepairSchedule()">🖨️ Печать графика</button>
+      <button class="btn-secondary" onclick="generateRepairReport()">📊 Сформировать отчет</button>
+      <button class="btn-warning" onclick="importRepairData()">📤 Импорт данных</button>
+      <button class="btn-success" onclick="planNextRepairs()">🎯 Планирование ремонтов</button>
+    </div>
+  </div>
+</div>
+
 <script>
+
 // ==================== СИСТЕМА ХРАНЕНИЯ ====================
+
 class CMMSStorage {
     // Новые методы для работы с названием предприятия
     static getCompanyName() {
@@ -1859,7 +2128,9 @@ function generateEquipmentReport() {
 function showAddEquipmentQuick() {
     alert('Быстрое добавление оборудования - форма будет реализована');
 }
+
 // ==================== УПРАВЛЕНИЕ ЭКРАНАМИ ====================
+
 class ScreenManager {
     static show(screenId) {
         document.querySelectorAll('.screen').forEach(screen => {
@@ -1870,6 +2141,7 @@ class ScreenManager {
 }
 
 // ==================== ФУНКЦИИ ОБОРУДОВАНИЯ ====================
+
 function openEquipmentCategory(category) {
     const screenMap = {
         'ЭКГ': 'ekg-screen',
@@ -1883,280 +2155,6 @@ function openEquipmentCategory(category) {
     if (screenId) {
         ScreenManager.show(screenId);
     }
-}
-
-// ==================== ФУНКЦИИ ДЛЯ ЭКРАНА ЭКГ ====================
-let selectedEquipmentId = 1;
-
-function selectEquipment(id) {
-    selectedEquipmentId = id;
-    
-    // Убираем выделение у всех элементов
-    document.querySelectorAll('.equipment-item').forEach(item => {
-        item.classList.remove('selected');
-    });
-    
-    // Добавляем выделение выбранному элементу
-    const selectedItem = document.querySelector(`.equipment-item[data-id="${id}"]`);
-    if (selectedItem) {
-        selectedItem.classList.add('selected');
-    }
-    
-    // Обновляем шапку с выбранным оборудованием
-    if (selectedItem) {
-        const equipmentName = selectedItem.textContent;
-        const selectElement = document.getElementById('current-excavator');
-        if (selectElement) {
-            selectElement.value = equipmentName.split('. ')[1];
-        }
-    }
-    
-    // Здесь можно добавить загрузку данных для выбранного оборудования
-    loadEquipmentData(id);
-}
-
-function loadEquipmentData(equipmentId) {
-    // Загрузка данных оборудования (заглушка)
-    console.log(`Загрузка данных для оборудования ID: ${equipmentId}`);
-}
-
-function acceptShift() {
-    alert('Функция "Принять смену" будет реализована');
-}
-
-function handOverShift() {
-    alert('Функция "Сдать смену" будет реализована');
-}
-
-function registerMalfunction() {
-    alert('Функция "Регистрация неисправностей" будет реализована');
-}
-
-function viewMalfunctionsEKG() {
-    alert('Функция "Просмотр неисправностей" будет реализована');
-}
-
-function resolveMalfunctions() {
-    alert('Функция "Устранение неисправностей" будет реализована');
-}
-
-function addNewRecord() {
-    alert('Функция "Добавить запись" будет реализована');
-}
-
-function exportShiftReport() {
-    alert('Функция "Экспорт отчета смены" будет реализована');
-}
-
-// ==================== ФУНКЦИИ ДЛЯ ФОРМЫ ДОБАВЛЕНИЯ ТЕХНИКИ ====================
-
-function showAddEquipmentForm() {
-    ScreenManager.show('add-equipment-screen');
-    clearForm();
-}
-
-function addPhoto() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.multiple = true;
-    input.onchange = function(e) {
-        handleFileUpload(e.target.files, 'photo');
-    };
-    input.click();
-}
-
-function addElectricalSchemes() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.pdf';
-    input.multiple = true;
-    input.onchange = function(e) {
-        handleFileUpload(e.target.files, 'scheme');
-    };
-    input.click();
-}
-
-function addCabinetPhotos() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.multiple = true;
-    input.onchange = function(e) {
-        handleFileUpload(e.target.files, 'cabinet');
-    };
-    input.click();
-}
-
-function handleFileUpload(files, type) {
-    const previews = document.getElementById('file-previews');
-    const typeLabels = {
-        'photo': '📷 Фото',
-        'scheme': '📄 Схема',
-        'cabinet': '🖼️ Шкаф'
-    };
-    
-    Array.from(files).forEach(file => {
-        const fileDiv = document.createElement('div');
-        fileDiv.className = 'equipment-item';
-        fileDiv.style.display = 'flex';
-        fileDiv.style.justifyContent = 'space-between';
-        fileDiv.style.alignItems = 'center';
-        fileDiv.style.padding = '8px';
-        
-        fileDiv.innerHTML = `
-            <div>
-                <strong>${typeLabels[type]}</strong><br>
-                <small>${file.name}</small>
-            </div>
-            <button class="btn-danger" style="padding: 4px 8px; font-size: 12px;" 
-                    onclick="this.parentElement.remove()">×</button>
-        `;
-        
-        previews.appendChild(fileDiv);
-    });
-    
-    // Убираем сообщение "Загруженные файлы появятся здесь"
-    const note = previews.querySelector('.note');
-    if (note) note.remove();
-}
-
-function updatePreview() {
-    const preview = document.getElementById('equipment-preview');
-    const name = document.getElementById('equipment-name').value;
-    const serial = document.getElementById('serial-number').value;
-    
-    if (!name && !serial) {
-        preview.innerHTML = '<div class="note">Заполните форму для просмотра предпросмотра</div>';
-        return;
-    }
-    
-    preview.innerHTML = `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div>
-                <strong>Основная информация:</strong>
-                <div>Наименование: ${name || 'не указано'}</div>
-                <div>Порядковый номер: ${serial || 'не указан'}</div>
-                <div>Тип лопаты: ${document.getElementById('shovel-type').value || 'не выбран'}</div>
-                <div>Тип привода: ${document.getElementById('drive-type').value || 'не выбран'}</div>
-            </div>
-            <div>
-                <strong>Технические характеристики:</strong>
-                <div>Мощность: ${document.getElementById('power-consumption').value || '0'} Вт</div>
-                <div>Вместимость ковша: ${document.getElementById('bucket-capacity').value || '0'} м³</div>
-                <div>Дата ввода: ${document.getElementById('commissioning-date').value || 'не указана'}</div>
-            </div>
-        </div>
-    `;
-}
-
-function saveEquipment() {
-    const equipmentData = collectEquipmentData();
-    
-    if (!validateEquipmentData(equipmentData)) {
-        return;
-    }
-    
-    // Сохранение в localStorage
-    const existingEquipment = CMMSStorage.getEquipment();
-    equipmentData.id = Date.now();
-    equipmentData.createdAt = new Date().toISOString();
-    existingEquipment.push(equipmentData);
-    CMMSStorage.saveEquipment(existingEquipment);
-    
-    // Добавляем технику в список на экране ЭКГ
-    addEquipmentToList(equipmentData);
-    
-    alert('✅ Техника успешно сохранена!');
-    ScreenManager.show('ekg-screen');
-}
-
-function addEquipmentToList(equipmentData) {
-    const equipmentList = document.getElementById('equipment-list');
-    if (!equipmentList) return;
-    
-    const newId = equipmentList.children.length + 1;
-    
-    const newItem = document.createElement('div');
-    newItem.className = 'equipment-item';
-    newItem.setAttribute('data-id', newId);
-    newItem.textContent = `${newId}. ${equipmentData.name}`;
-    newItem.onclick = function() { selectEquipment(newId); };
-    
-    equipmentList.appendChild(newItem);
-    
-    // Добавляем в выпадающий список в шапке
-    const select = document.getElementById('current-excavator');
-    if (select) {
-        const option = document.createElement('option');
-        option.value = equipmentData.name;
-        option.textContent = equipmentData.name;
-        select.appendChild(option);
-    }
-}
-
-function saveAsDraft() {
-    const equipmentData = collectEquipmentData();
-    equipmentData.id = Date.now();
-    equipmentData.isDraft = true;
-    equipmentData.createdAt = new Date().toISOString();
-    
-    const drafts = JSON.parse(localStorage.getItem('cmms_equipment_drafts') || '[]');
-    drafts.push(equipmentData);
-    localStorage.setItem('cmms_equipment_drafts', JSON.stringify(drafts));
-    
-    alert('📝 Черновик сохранен!');
-}
-
-function collectEquipmentData() {
-    return {
-        name: document.getElementById('equipment-name').value,
-        shovelType: document.getElementById('shovel-type').value,
-        driveType: document.getElementById('drive-type').value,
-        powerConsumption: document.getElementById('power-consumption').value,
-        liftPower: document.getElementById('lift-power').value,
-        pressurePower: document.getElementById('pressure-power').value,
-        etoRepair: document.getElementById('eto-repair').value,
-        serialNumber: document.getElementById('serial-number').value,
-        bucketCapacity: document.getElementById('bucket-capacity').value,
-        commissioningDate: document.getElementById('commissioning-date').value,
-        tsnPower: document.getElementById('tsn-power').value,
-        rotationPower: document.getElementById('rotation-power').value,
-        travelPower: document.getElementById('travel-power').value,
-        tr1Repair: document.getElementById('tr1-repair').value
-    };
-}
-
-function validateEquipmentData(data) {
-    if (!data.name) {
-        alert('⚠️ Введите полное наименование техники');
-        return false;
-    }
-    if (!data.serialNumber) {
-        alert('⚠️ Введите порядковый номер');
-        return false;
-    }
-    return true;
-}
-
-function clearForm() {
-    document.getElementById('equipment-name').value = '';
-    document.getElementById('shovel-type').value = '';
-    document.getElementById('drive-type').value = '';
-    document.getElementById('power-consumption').value = '';
-    document.getElementById('lift-power').value = '';
-    document.getElementById('pressure-power').value = '';
-    document.getElementById('eto-repair').value = '';
-    document.getElementById('serial-number').value = '';
-    document.getElementById('bucket-capacity').value = '';
-    document.getElementById('commissioning-date').value = '';
-    document.getElementById('tsn-power').value = '';
-    document.getElementById('rotation-power').value = '';
-    document.getElementById('travel-power').value = '';
-    document.getElementById('tr1-repair').value = '';
-    
-    document.getElementById('file-previews').innerHTML = '<div class="note">Загруженные файлы появятся здесь</div>';
-    document.getElementById('equipment-preview').innerHTML = '<div class="note">Заполните форму для просмотра предпросмотра</div>';
 }
 
 // ==================== УНИВЕРСАЛЬНАЯ СИСТЕМА ДОБАВЛЕНИЯ ОБОРУДОВАНИЯ ====================
@@ -2228,200 +2226,9 @@ function showAddEquipmentForm() {
     showAddEquipmentUniversal('ЭКГ');
 }
 
-// ==================== УНИВЕРСАЛЬНАЯ СИСТЕМА ДОБАВЛЕНИЯ ОБОРУДОВАНИЯ ====================
-
-
-
-function showAddEquipmentUniversal(category = '') {
-    currentEquipmentCategory = category;
-    
-    // Устанавливаем категорию в форме
-    if (category) {
-        document.getElementById('equipment-category').value = category;
-        updateFormFields();
-    }
-    
-    // Обновляем заголовок
-    const titleMap = {
-        'ЭКГ': '🏗️ Добавление нового экскаватора ЭКГ',
-        'БелАзы': '🚛 Добавление нового карьерного самосвала',
-        'Буровые': '⛏️ Добавление новой буровой установки', 
-        'Водоотлив': '💧 Добавление новой системы водоотлива',
-        'Сети': '🔌 Добавление нового сетевого оборудования'
-    };
-    
-    document.getElementById('universal-form-title').textContent = 
-        titleMap[category] || '➕ Добавление нового оборудования';
-    
-    ScreenManager.show('add-equipment-universal-screen');
-    clearUniversalForm();
-}
-
-function updateFormFields() {
-    const category = document.getElementById('equipment-category').value;
-    
-    // Скрываем все динамические поля
-    document.getElementById('ekg-fields').style.display = 'none';
-    document.getElementById('belaz-fields').style.display = 'none';
-    document.getElementById('additional-fields').style.display = 'none';
-    
-    // Показываем поля для выбранной категории
-    if (category === 'ЭКГ') {
-        document.getElementById('ekg-fields').style.display = 'block';
-    } else if (category === 'БелАзы') {
-        document.getElementById('belaz-fields').style.display = 'block';
-    }
-    
-    // Можно добавить поля для других категорий по аналогии
-}
-
-function goBackToEquipmentCategory() {
-    // Возвращаемся к предыдущему экрану в зависимости от категории
-    if (currentEquipmentCategory === 'ЭКГ') {
-        ScreenManager.show('ekg-screen');
-    } else if (currentEquipmentCategory === 'БелАзы') {
-        ScreenManager.show('belaz-screen');
-    } else {
-        // Если категория не указана, возвращаемся на главную оборудования
-        ScreenManager.show('equipment-main-screen');
-    }
-}
-
-// Обновляем функцию быстрого добавления
-function showAddEquipmentQuick() {
-    showAddEquipmentUniversal(); // Без конкретной категории
-}
-
-// Обновляем функцию в форме ЭКГ
-function showAddEquipmentForm() {
-    showAddEquipmentUniversal('ЭКГ');
-}
-
 // ==================== ФУНКЦИИ ДЛЯ ДОКУМЕНТАЦИИ ====================
 
-function viewOperationManual() {
-    alert('Просмотр руководства по эксплуатации');
-}
-
-function viewElectricalSchemes() {
-    alert('Просмотр электрической схемы');
-}
-
-function viewEquipmentPhotos() {
-    alert('Просмотр фотографии оборудования');
-}
-
-function viewEngineDrawings() {
-    alert('Просмотр чертежей и схем двигателей');
-}
-
-function viewEquipmentPassports() {
-    alert('Просмотр сканов паспортов оборудования');
-}
-
-function viewCableJournal() {
-    alert('Просмотр кабельного журнала');
-}
-
-function viewAggregateJournal() {
-    alert('Просмотр агрегатного журнала');
-}
-function viewMalfunctionAnnotation() {
-  alert('Аннотация по устранению неисправностей')
-}
-function viewSettingsParameters() {
-    alert('Просмотр установленных наладочных параметров');
-}
-
-function viewComponents() {
-    alert('Просмотр узлов и компонентов');
-}
-
-function viewRepairGraphs() {
-    alert('Просмотр графиков ремонтов ЕТО, ТР1, ТР2, КР');
-}
-
-// ==================== ФУНКЦИИ ДЛЯ МЕДИАФАЙЛОВ ====================
-
-function addMainPhoto() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = function(e) {
-        handleFileUploadUniversal(e.target.files, 'main-photo');
-    };
-    input.click();
-}
-
-function addTechnicalDrawings() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*,.pdf';
-    input.multiple = true;
-    input.onchange = function(e) {
-        handleFileUploadUniversal(e.target.files, 'drawings');
-    };
-    input.click();
-}
-
-function addPassportScans() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*,.pdf';
-    input.multiple = true;
-    input.onchange = function(e) {
-        handleFileUploadUniversal(e.target.files, 'passports');
-    };
-    input.click();
-}
-
-function addAdditionalPhotos() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.multiple = true;
-    input.onchange = function(e) {
-        handleFileUploadUniversal(e.target.files, 'additional-photos');
-    };
-    input.click();
-}
-
-function handleFileUploadUniversal(files, type) {
-    const previews = document.getElementById('file-previews-universal');
-    const typeLabels = {
-        'main-photo': '📷 Основное фото',
-        'drawings': '🛠️ Чертежи',
-        'passports': '📑 Паспорта',
-        'additional-photos': '🖼️ Доп. фото',
-        'scheme': '🔌 Схемы'
-    };
-    
-    Array.from(files).forEach(file => {
-        const fileDiv = document.createElement('div');
-        fileDiv.className = 'equipment-item';
-        fileDiv.style.display = 'flex';
-        fileDiv.style.justifyContent = 'space-between';
-        fileDiv.style.alignItems = 'center';
-        fileDiv.style.padding = '8px';
-        
-        fileDiv.innerHTML = `
-            <div>
-                <strong>${typeLabels[type]}</strong><br>
-                <small>${file.name}</small>
-            </div>
-            <button class="btn-danger" style="padding: 4px 8px; font-size: 12px;" 
-                    onclick="this.parentElement.remove()">×</button>
-        `;
-        
-        previews.appendChild(fileDiv);
-    });
-    
-    // Убираем сообщение "Загруженные файлы появятся здесь"
-    const note = previews.querySelector('.note');
-    if (note) note.remove();
-}
-
-// ==================== ФУНКЦИИ ДЛЯ РУКОВОДСТВА ПО ЭКСПЛУАТАЦИИ ====================
+// ==================== ФУНКЦИИ ДЛЯ РУКОВОДСТВА ПО ЭКСПЛУАТАЦИИ(10) ====================
 
 function viewOperationManual() {
     // Получаем информацию о выбранном оборудовании (если есть)
@@ -2478,6 +2285,8 @@ function downloadManual() {
     alert('Скачивание руководства по эксплуатации');
     // Здесь будет логика скачивания файла
 }
+
+// ==================== ФУНКЦИИ ДЛЯ ПРОСМОТРА ЭЛЕКТРИЧЕСКОЙ СХЕМЫ(11) ====================
 
 function viewElectricalSchemes() {
     // Получаем информацию о выбранном оборудовании
@@ -2541,7 +2350,7 @@ function selectScheme(schemeId) {
     alert(`Выбрана схема: ${scheme.name} (${scheme.type})`);
 }
 
-// ==================== ФУНКЦИИ ДЛЯ ФОТОГРАФИЙ ОБОРУДОВАНИЯ ====================
+// ==================== ФУНКЦИИ ДЛЯ ПРОСМОТРА ФОТОГРАФИИ ОБОРУДОВАНИЯ(12) ====================
 
 function viewEquipmentPhotos() {
     // Получаем информацию о выбранном оборудовании
@@ -2618,24 +2427,7 @@ function printPhotos() {
     // Здесь будет логика печати фото
 }
 
-function checkEngineDrawingsAdminAccess() {
-    // Проверяем, является ли пользователь администратором
-    const isAdmin = currentUser && currentUser.role === 'admin';
-    
-    // Показываем/скрываем кнопки для администратора (ТОЛЬКО ВЕРХНИЕ)
-    const adminButtonsTop = document.getElementById('admin-engine-drawings-buttons');
-    const userMessage = document.getElementById('user-engine-drawings-message');
-    
-    if (isAdmin) {
-        adminButtonsTop.style.display = 'flex';
-        userMessage.style.display = 'none';
-    } else {
-        adminButtonsTop.style.display = 'none';
-        userMessage.style.display = 'block';
-    }
-}
-
-// ==================== ФУНКЦИИ ДЛЯ ЧЕРТЕЖЕЙ И СХЕМ ДВИГАТЕЛЕЙ ====================
+// ==================== ФУНКЦИИ ДЛЯ ПРОСМОТРА ЧЕРТЕЖЕЙ И СХЕМ ДВИГАТЕЛЕЙ(13) ====================
 
 function viewEngineDrawings() {
     // Получаем информацию о выбранном оборудовании
@@ -2764,7 +2556,7 @@ function viewEngineDrawingFile(filename, type) {
     // Здесь будет логика просмотра файла
 }
 
-// ==================== ФУНКЦИИ ДЛЯ СКАНОВ ПАСПОРТОВ ОБОРУДОВАНИЯ ====================
+// ==================== ФУНКЦИИ ДЛЯ СКАНОВ ПАСПОРТОВ ОБОРУДОВАНИЯ(14) ====================
 
 function viewEquipmentPassports() {
     // Получаем информацию о выбранном оборудовании
@@ -2816,7 +2608,7 @@ function downloadPassport() {
     // Здесь будет логика скачивания файла
 }
 
-// ==================== ФУНКЦИИ ДЛЯ КАБЕЛЬНОГО ЖУРНАЛА ====================
+// ==================== ФУНКЦИИ ДЛЯ КАБЕЛЬНОГО ЖУРНАЛА(15) ====================
 
 function viewCableJournal() {
     // Получаем информацию о выбранном оборудовании
@@ -2865,7 +2657,7 @@ function downloadCableJournal() {
     // Здесь будет логика скачивания файла
 }
 
-// ==================== ФУНКЦИИ ДЛЯ АГРЕГАТНОГО ЖУРНАЛА ====================
+// ==================== ФУНКЦИИ ДЛЯ АГРЕГАТНОГО ЖУРНАЛА(16) ====================
 
 function viewAggregateJournal() {
     // Получаем информацию о выбранном оборудовании
@@ -2878,6 +2670,47 @@ function viewAggregateJournal() {
     
     // Переходим на страницу агрегатного журнала
     ScreenManager.show('aggregate-journal-screen');
+}
+
+function applyAggregateFilters() {
+    const dateFrom = document.getElementById('date-from').value;
+    const dateTo = document.getElementById('date-to').value;
+    const searchText = document.getElementById('search-description').value;
+    
+    // Логика применения фильтров
+    alert(`Фильтры применены:\nПериод: ${dateFrom || 'не указан'} - ${dateTo || 'не указан'}\nПоиск: ${searchText || 'не задан'}`);
+}
+
+function clearAggregateFilters() {
+    document.getElementById('date-from').value = '';
+    document.getElementById('date-to').value = '';
+    document.getElementById('search-description').value = '';
+    alert('Фильтры очищены');
+}
+
+function exportAggregateJournal() {
+    alert('Экспорт агрегатного журнала в PDF');
+    // Логика экспорта
+}
+
+function printAggregateJournal() {
+    alert('Печать агрегатного журнала');
+    // Логика печати
+}
+
+function generateAggregateReport() {
+    alert('Формирование отчета по агрегатному журналу');
+    // Логика формирования отчета
+}
+
+function importAggregateData() {
+    alert('Импорт данных в агрегатный журнал');
+    // Логика импорта
+}
+
+function editAggregateRecord() {
+    alert('Редактирование агрегатного журнала');
+    // Логика массового редактирования
 }
 
 function addAggregateRecord() {
@@ -3003,45 +2836,108 @@ function deleteRecord(recordId) {
     }
 }
 
-function applyAggregateFilters() {
-    const dateFrom = document.getElementById('date-from').value;
-    const dateTo = document.getElementById('date-to').value;
-    const searchText = document.getElementById('search-description').value;
+function viewMalfunctionAnnotation() {
+  alert('Аннотация по устранению неисправностей')
+}
+function viewSettingsParameters() {
+    alert('Просмотр установленных наладочных параметров');
+}
+
+// ==================== ФУНКЦИИ ДЛЯ МЕДИАФАЙЛОВ ====================
+
+function addMainPhoto() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = function(e) {
+        handleFileUploadUniversal(e.target.files, 'main-photo');
+    };
+    input.click();
+}
+
+function addTechnicalDrawings() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*,.pdf';
+    input.multiple = true;
+    input.onchange = function(e) {
+        handleFileUploadUniversal(e.target.files, 'drawings');
+    };
+    input.click();
+}
+
+function addPassportScans() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*,.pdf';
+    input.multiple = true;
+    input.onchange = function(e) {
+        handleFileUploadUniversal(e.target.files, 'passports');
+    };
+    input.click();
+}
+
+function addAdditionalPhotos() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = function(e) {
+        handleFileUploadUniversal(e.target.files, 'additional-photos');
+    };
+    input.click();
+}
+
+function handleFileUploadUniversal(files, type) {
+    const previews = document.getElementById('file-previews-universal');
+    const typeLabels = {
+        'main-photo': '📷 Основное фото',
+        'drawings': '🛠️ Чертежи',
+        'passports': '📑 Паспорта',
+        'additional-photos': '🖼️ Доп. фото',
+        'scheme': '🔌 Схемы'
+    };
     
-    // Логика применения фильтров
-    alert(`Фильтры применены:\nПериод: ${dateFrom || 'не указан'} - ${dateTo || 'не указан'}\nПоиск: ${searchText || 'не задан'}`);
+    Array.from(files).forEach(file => {
+        const fileDiv = document.createElement('div');
+        fileDiv.className = 'equipment-item';
+        fileDiv.style.display = 'flex';
+        fileDiv.style.justifyContent = 'space-between';
+        fileDiv.style.alignItems = 'center';
+        fileDiv.style.padding = '8px';
+        
+        fileDiv.innerHTML = `
+            <div>
+                <strong>${typeLabels[type]}</strong><br>
+                <small>${file.name}</small>
+            </div>
+            <button class="btn-danger" style="padding: 4px 8px; font-size: 12px;" 
+                    onclick="this.parentElement.remove()">×</button>
+        `;
+        
+        previews.appendChild(fileDiv);
+    });
+    
+    // Убираем сообщение "Загруженные файлы появятся здесь"
+    const note = previews.querySelector('.note');
+    if (note) note.remove();
 }
 
-function clearAggregateFilters() {
-    document.getElementById('date-from').value = '';
-    document.getElementById('date-to').value = '';
-    document.getElementById('search-description').value = '';
-    alert('Фильтры очищены');
-}
-
-function exportAggregateJournal() {
-    alert('Экспорт агрегатного журнала в PDF');
-    // Логика экспорта
-}
-
-function printAggregateJournal() {
-    alert('Печать агрегатного журнала');
-    // Логика печати
-}
-
-function generateAggregateReport() {
-    alert('Формирование отчета по агрегатному журналу');
-    // Логика формирования отчета
-}
-
-function importAggregateData() {
-    alert('Импорт данных в агрегатный журнал');
-    // Логика импорта
-}
-
-function editAggregateRecord() {
-    alert('Редактирование агрегатного журнала');
-    // Логика массового редактирования
+function checkEngineDrawingsAdminAccess() {
+    // Проверяем, является ли пользователь администратором
+    const isAdmin = currentUser && currentUser.role === 'admin';
+    
+    // Показываем/скрываем кнопки для администратора (ТОЛЬКО ВЕРХНИЕ)
+    const adminButtonsTop = document.getElementById('admin-engine-drawings-buttons');
+    const userMessage = document.getElementById('user-engine-drawings-message');
+    
+    if (isAdmin) {
+        adminButtonsTop.style.display = 'flex';
+        userMessage.style.display = 'none';
+    } else {
+        adminButtonsTop.style.display = 'none';
+        userMessage.style.display = 'block';
+    }
 }
 
 // Функции для работы с категориями оборудования
@@ -3059,16 +2955,6 @@ function toggleCategory(category) {
     content.classList.remove('show');
   }
 }
-
-// Инициализация - показываем ЭКГ сразу при загрузке
-document.addEventListener('DOMContentLoaded', function() {
-  // ЭКГ показываются сразу, остальные категории скрыты
-  const ekgList = document.getElementById('ekg-list');
-  if (ekgList) {
-    ekgList.style.display = 'block';
-    ekgList.classList.add('show');
-  }
-});
 
 // Функция для отображения категории оборудования
 function showEquipmentCategory(category) {
@@ -3228,7 +3114,480 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// ==================== ФУНКЦИИ ДЛЯ УЗЛОВ И КОМПОНЕНТОВ(19) ====================
+
+function viewComponents() {
+    // Получаем информацию о выбранном оборудовании
+    const equipmentName = document.getElementById('equipment-name-universal')?.value || 'Двигатель привода напора';
+    const equipmentSerial = document.getElementById('serial-number-universal')?.value || '№57498';
+    
+    // Обновляем информацию на странице
+    document.getElementById('components-equipment-name').textContent = equipmentName;
+    document.getElementById('components-serial-number').textContent = equipmentSerial;
+    
+    // Переходим на страницу узлов и компонентов
+    ScreenManager.show('components-screen');
+}
+
+function addComponent() {
+    // Создаем модальное окно для добавления компонента
+    const modalHtml = `
+        <div id="add-component-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+            <div style="background: #1e293b; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; border: 2px solid #06b6d4;">
+                <h3>➕ Добавить узел или компонент</h3>
+                
+                <div style="display: grid; gap: 15px; margin: 20px 0;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">🔩 Наименование</label>
+                        <input type="text" id="new-component-name" placeholder="Например: Щетки электро" style="width: 100%;">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">📝 Описание</label>
+                        <textarea id="new-component-description" placeholder="Подробное описание компонента..." rows="3" style="width: 100%;"></textarea>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">⏱️ Срок службы</label>
+                            <input type="text" id="new-component-lifespan" placeholder="Например: 14 мес." style="width: 100%;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">📅 Дата установки</label>
+                            <input type="date" id="new-component-install-date" style="width: 100%;" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="btn-secondary" onclick="closeComponentModal()">Отмена</button>
+                    <button class="btn-success" onclick="saveComponent()">💾 Сохранить компонент</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeComponentModal() {
+    const modal = document.getElementById('add-component-modal');
+    if (modal) modal.remove();
+}
+
+function saveComponent() {
+    const name = document.getElementById('new-component-name').value;
+    const description = document.getElementById('new-component-description').value;
+    const lifespan = document.getElementById('new-component-lifespan').value;
+    const installDate = document.getElementById('new-component-install-date').value;
+    
+    if (!name || !description || !lifespan) {
+        alert('Заполните все обязательные поля');
+        return;
+    }
+    
+    // Здесь будет логика сохранения компонента
+    const newComponent = {
+        id: Date.now(),
+        name: name,
+        description: description,
+        lifespan: lifespan,
+        installDate: installDate,
+        status: 'active'
+    };
+    
+    // Добавляем компонент в таблицу
+    addComponentToTable(newComponent);
+    
+    closeComponentModal();
+    alert('✅ Компонент успешно добавлен!');
+}
+
+function addComponentToTable(component) {
+    const tbody = document.getElementById('components-table-body');
+    
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td><strong>${component.name}</strong></td>
+        <td>
+            <strong>${component.description}</strong><br>
+            <small>Новый компонент</small>
+        </td>
+        <td>
+            <strong>${component.lifespan}</strong><br>
+            <small style="color: #10b981;">Установлен: ${formatDate(component.installDate)}</small>
+        </td>
+        <td>
+            <span style="color: #10b981; font-weight: bold;">✅ Активен</span>
+        </td>
+        <td>
+            <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editComponentItem(${component.id})">✏️</button>
+            <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteComponent(${component.id})">🗑️</button>
+        </td>
+    `;
+    
+    tbody.insertBefore(newRow, tbody.firstChild);
+}
+
+function editComponent() {
+    alert('Редактирование узлов и компонентов');
+    // Логика массового редактирования
+}
+
+function editComponentItem(componentId) {
+    alert(`Редактирование компонента #${componentId}`);
+    // Логика редактирования конкретного компонента
+}
+
+function deleteComponent(componentId) {
+    if (confirm('Вы уверены, что хотите удалить этот компонент?')) {
+        alert(`Компонент #${componentId} удален`);
+        // Логика удаления компонента
+    }
+}
+
+function applyComponentFilters() {
+    const searchText = document.getElementById('component-search').value;
+    const lifespanFilter = document.getElementById('lifespan-filter').value;
+    
+    // Логика применения фильтров
+    alert(`Фильтры применены:\nПоиск: ${searchText || 'не задан'}\nСрок службы: ${lifespanFilter || 'все'}`);
+}
+
+function clearComponentFilters() {
+    document.getElementById('component-search').value = '';
+    document.getElementById('lifespan-filter').value = '';
+    alert('Фильтры очищены');
+}
+
+function viewComponentPhoto(photoId) {
+    alert(`Просмотр фотографии компонента #${photoId}`);
+    // Логика просмотра фотографии
+}
+
+function addComponentPhoto() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            const fileCount = e.target.files.length;
+            alert(`Загружено ${fileCount} фотографий компонентов!`);
+            // Здесь будет логика обработки загруженных фото
+        }
+    };
+    input.click();
+}
+
+function exportComponentsList() {
+    alert('Экспорт списка компонентов в Excel');
+    // Логика экспорта
+}
+
+function generateComponentsReport() {
+    alert('Формирование отчета по компонентам');
+    // Логика формирования отчета
+}
+
+function checkComponentsLifespan() {
+    alert('Проверка сроков службы компонентов');
+    // Логика проверки сроков
+}
+
+function importComponentsData() {
+    alert('Импорт данных компонентов');
+    // Логика импорта
+}
+
+// ==================== ФУНКЦИИ ДЛЯ ГРАФИКА РЕМОНТОВ(20) ====================
+
+function viewRepairGraphs() {
+    // Получаем информацию о выбранном оборудовании
+    const equipmentName = document.getElementById('equipment-name-universal')?.value || 'ЭКГ-12А';
+    const equipmentSerial = document.getElementById('serial-number-universal')?.value || '№57498';
+    
+    // Обновляем информацию на странице
+    document.getElementById('repair-equipment-name').textContent = equipmentName;
+    document.getElementById('repair-serial-number').textContent = equipmentSerial;
+    
+    // Переходим на страницу графика ремонтов
+    ScreenManager.show('repair-schedule-screen');
+}
+
+function switchRepairTab(tabType) {
+    // Убираем активный класс со всех вкладок
+    document.querySelectorAll('.repair-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Добавляем активный класс выбранной вкладке
+    event.target.classList.add('active');
+    
+    // Обновляем содержимое таблицы в зависимости от типа ремонта
+    updateRepairsTable(tabType);
+}
+
+function updateRepairsTable(repairType) {
+    const tbody = document.getElementById('repair-table-body');
+    
+    // В реальной системе здесь была бы загрузка данных с сервера
+    // Сейчас просто показываем сообщение о смене вкладки
+    console.log(`Загрузка данных для типа ремонта: ${repairType}`);
+    
+    // Можно добавить фильтрацию существующих данных по типу ремонта
+    const repairs = {
+        'eto': 'Ежесменное техническое обслуживание',
+        'to1': 'Техническое обслуживание №1', 
+        'kr': 'Капитальный ремонт',
+        'add': 'Добавление нового ремонта'
+    };
+    
+    if (repairType === 'add') {
+        showAddRepairModal();
+    }
+}
+
+function addRepair() {
+    showAddRepairModal();
+}
+
+function showAddRepairModal() {
+    // Создаем модальное окно для добавления ремонта
+    const modalHtml = `
+        <div id="add-repair-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+            <div style="background: #1e293b; padding: 30px; border-radius: 12px; width: 90%; max-width: 700px; border: 2px solid #06b6d4;">
+                <h3>➕ Добавить ремонт в график</h3>
+                
+                <div style="display: grid; gap: 15px; margin: 20px 0;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">🔧 Тип ремонта</label>
+                            <select id="new-repair-type" style="width: 100%;">
+                                <option value="eto">ЕТО - Ежесменное ТО</option>
+                                <option value="to1">ТО1 - Техническое обслуживание 1</option>
+                                <option value="to2">ТО2 - Техническое обслуживание 2</option>
+                                <option value="kr">КР - Капитальный ремонт</option>
+                                <option value="tr">ТР - Текущий ремонт</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">⏱️ Периодичность</label>
+                            <input type="text" id="new-repair-frequency" placeholder="Например: 1 раз в мес" style="width: 100%;">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">📝 Наименование работ</label>
+                        <input type="text" id="new-repair-title" placeholder="Например: Осмотр щеточного аппарата" style="width: 100%;">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">📋 Описание работ по ремонту</label>
+                        <textarea id="new-repair-description" placeholder="Подробное описание выполняемых работ..." rows="4" style="width: 100%;"></textarea>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">👥 Человек/час</label>
+                            <input type="number" id="new-repair-manhours" placeholder="4" min="1" style="width: 100%;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">💰 Стоимость</label>
+                            <input type="number" id="new-repair-cost" placeholder="0" min="0" style="width: 100%;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">📅 Следующий ремонт</label>
+                            <input type="date" id="new-repair-next-date" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="btn-secondary" onclick="closeRepairModal()">Отмена</button>
+                    <button class="btn-success" onclick="saveRepair()">💾 Сохранить ремонт</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeRepairModal() {
+    const modal = document.getElementById('add-repair-modal');
+    if (modal) modal.remove();
+}
+
+function saveRepair() {
+    const type = document.getElementById('new-repair-type').value;
+    const frequency = document.getElementById('new-repair-frequency').value;
+    const title = document.getElementById('new-repair-title').value;
+    const description = document.getElementById('new-repair-description').value;
+    const manhours = document.getElementById('new-repair-manhours').value;
+    const cost = document.getElementById('new-repair-cost').value;
+    const nextDate = document.getElementById('new-repair-next-date').value;
+    
+    if (!frequency || !title || !description || !manhours) {
+        alert('Заполните все обязательные поля');
+        return;
+    }
+    
+    // Здесь будет логика сохранения ремонта
+    const newRepair = {
+        id: Date.now(),
+        type: type,
+        frequency: frequency,
+        title: title,
+        description: description,
+        manhours: manhours,
+        cost: cost,
+        nextDate: nextDate,
+        status: 'active'
+    };
+    
+    // Добавляем ремонт в таблицу
+    addRepairToTable(newRepair);
+    
+    closeRepairModal();
+    alert('✅ Ремонт успешно добавлен в график!');
+}
+
+function addRepairToTable(repair) {
+    const tbody = document.getElementById('repair-table-body');
+    
+    const typeLabels = {
+        'eto': 'ЕТО',
+        'to1': 'ТО1',
+        'to2': 'ТО2', 
+        'kr': 'КР',
+        'tr': 'ТР'
+    };
+    
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td>
+            <strong>${repair.frequency}</strong><br>
+            <small style="color: #06b6d4;">Следующий: ${formatDate(repair.nextDate)}</small>
+        </td>
+        <td>
+            <strong>${repair.title}</strong><br>
+            <small>${repair.description}</small>
+        </td>
+        <td>
+            <strong>${repair.manhours}</strong><br>
+            <small>часов</small>
+        </td>
+        <td>
+            <span style="color: #10b981; font-weight: bold;">✅ Активен</span>
+        </td>
+        <td>
+            <button class="btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editRepairItem(${repair.id})">✏️</button>
+            <button class="btn-danger" style="padding: 4px 8px; font-size: 12px; margin-left: 5px;" onclick="deleteRepair(${repair.id})">🗑️</button>
+        </td>
+    `;
+    
+    tbody.insertBefore(newRow, tbody.firstChild);
+}
+
+function editRepair() {
+    alert('Редактирование графика ремонтов');
+    // Логика массового редактирования
+}
+
+function editRepairItem(repairId) {
+    alert(`Редактирование ремонта #${repairId}`);
+    // Логика редактирования конкретного ремонта
+}
+
+function deleteRepair(repairId) {
+    if (confirm('Вы уверены, что хотите удалить этот ремонт из графика?')) {
+        alert(`Ремонт #${repairId} удален`);
+        // Логика удаления ремонта
+    }
+}
+
+function switchChartType(chartType) {
+    // Убираем активный класс со всех кнопок
+    document.querySelectorAll('#chart-area ~ .card .btn-secondary').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Добавляем активный класс выбранной кнопке
+    event.target.classList.add('active');
+    
+    // Обновляем содержимое области графиков
+    updateChartArea(chartType);
+}
+
+function updateChartArea(chartType) {
+    const chartArea = document.getElementById('chart-area');
+    const charts = {
+        'gantt': {
+            icon: '📅',
+            title: 'Диаграмма Ганта ремонтов',
+            description: 'Визуальное представление расписания ремонтов с временными интервалами'
+        },
+        'calendar': {
+            icon: '🗓️',
+            title: 'Календарный план ремонтов',
+            description: 'Планирование ремонтов по календарю с учетом ресурсов и сроков'
+        },
+        'stats': {
+            icon: '📈',
+            title: 'Статистика ремонтов',
+            description: 'Анализ эффективности и затрат на техническое обслуживание'
+        }
+    };
+    
+    const chart = charts[chartType];
+    chartArea.innerHTML = `
+        <div style="font-size: 48px; margin-bottom: 20px;">${chart.icon}</div>
+        <h4 style="color: #94a3b8; margin-bottom: 15px;">${chart.title}</h4>
+        <p style="color: #64748b; margin-bottom: 25px;">
+            ${chart.description}<br>
+            График будет отображать связи между ремонтами и их планирование.
+        </p>
+        <button class="btn-success" onclick="generateRepairChart()">🔄 Сгенерировать график</button>
+    `;
+}
+
+function generateRepairChart() {
+    alert('Генерация графика ремонтов...');
+    // Логика генерации графиков
+}
+
+function exportRepairSchedule() {
+    alert('Экспорт графика ремонтов в Excel/PDF');
+    // Логика экспорта
+}
+
+function printRepairSchedule() {
+    alert('Печать графика ремонтов');
+    // Логика печати
+}
+
+function generateRepairReport() {
+    alert('Формирование отчета по графикам ремонтов');
+    // Логика формирования отчета
+}
+
+function importRepairData() {
+    alert('Импорт данных ремонтов');
+    // Логика импорта
+}
+
+function planNextRepairs() {
+    alert('Планирование следующих ремонтов');
+    // Логика автоматического планирования
+}
+
 // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+
 let currentUser = null;
 let currentTest = {
     questions: [],
@@ -3237,6 +3596,7 @@ let currentTest = {
 };
 
 // ==================== ОПТИМИЗИРОВАННАЯ СИСТЕМА ВХОДА ====================
+
 async function handleLogin() {
     const login = document.getElementById('login').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -3288,6 +3648,7 @@ function handleSuccessfulLogin() {
 }
 
 // ==================== БАЗОВЫЕ ФУНКЦИИ ====================
+
 function showUserManagement() {
     alert('Управление пользователями будет реализовано');
 }
@@ -3305,6 +3666,7 @@ function generateUserReport() {
 }
 
 // ==================== СИСТЕМА ОБУЧЕНИЯ ====================
+
 function loadStudyMaterials() {
     const trainingData = CMMSStorage.getTrainingData();
     document.getElementById('study-content').innerHTML = `
@@ -3498,6 +3860,7 @@ function logout() {
 }
 
 // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+
 function initializeLoginSystem() {
     document.getElementById('login-btn').addEventListener('click', handleLogin);
     document.getElementById('logout-admin').addEventListener('click', logout);
@@ -3518,29 +3881,6 @@ function initializeLoginSystem() {
 
     loadQuestions();
 }
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Инициализируем отображение названия предприятия при загрузке
-    updateCompanyNameDisplay();
-    
-    initializeLoginSystem();
-    
-    // Инициализация экрана ЭКГ при загрузке
-    if (document.querySelector('.equipment-item')) {
-        selectEquipment(1);
-    }
-
-    // Инициализация обработчиков для формы добавления оборудования
-    const formScreen = document.getElementById('add-equipment-screen');
-    if (formScreen) {
-        const inputs = formScreen.querySelectorAll('input, select, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('input', updatePreview);
-            input.addEventListener('change', updatePreview);
-        });
-    }
-});
 </script>
 </body>
 </html>
